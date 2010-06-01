@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+<h1>Wordpress <abbr title="Creative Commons">CC</abbr> Plugin</h1>
+
+<h2>Installation</h2>
+
+<ol>
+    <li>Move the wordpress-cc-plugin file into /wp-contents/plugins/</li>
+    <li>???</li>
+    <li>Profit.</li>
+</ol>
+
+<h2>Changelog</h2>
+
+<ol>
+    <li><b>0.1</b>: added dummy interface</li>
+</ol>

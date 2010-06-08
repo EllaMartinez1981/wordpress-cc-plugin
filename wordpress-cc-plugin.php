@@ -129,12 +129,6 @@ function cc_wordpress_attachment_fields_to_save($post, $attachment) {
     cc_wordpress_update_or_add_or_delete($id, 'cc_license', $attachment['cc_license']);
     cc_wordpress_update_or_add_or_delete($id, 'cc_rights_holder', $attachment['cc_rights_holder']);
     cc_wordpress_update_or_add_or_delete($id, 'cc_attribution_url', $attachment['cc_attribution_url']);
-    
-//    $post['cc_license'] = $attachment['cc_license'];
-//    $post['cc_rights_holder'] = $attachment['cc_rights_holder'];
-//    $post['cc_attribution_url'] = $attachment['cc_attribution_url'];
-
-//    wp_update_post($post);
 
     return $post;
 }

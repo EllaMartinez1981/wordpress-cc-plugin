@@ -53,23 +53,27 @@ label {
 </style>
 
 <?php
-    print_r($post);
 
     $id = $post->ID;
-    echo 'license: ';
-    print_r(get_post_meta($id, 'cc_license'));
-    // echo 'rights holder: '. get_post_meta('cc_rights_holder', $id, true);
-    // echo 'attribution url: '. get_post_meta('cc_attribution_url', $id, true);
+
+    $license = get_post_meta($id, 'cc_license', true);
+
+    $byselected = ($license == "by") ? ' selected="selected"' : '';
+    $byncselected = ($license == "by-nc") ? ' selected="selected"' : '';
+    $byndselected = ($license == "by-nd") ? ' selected="selected"' : '';
+    $bysaselected = ($license == "by-sa") ? ' selected="selected"' : '';
+    $byncndselected = ($license == "by-nc-nd") ? ' selected="selected"' : '';
+    $byncsaselected = ($license == "by-nc-sa") ? ' selected="selected"' : '';
 
     $html = '
         <select id="cc_license" name="attachments['. $post->ID .'][cc_license]">
             <option value="">(none)</option>
-            <option value="by">BY</option>
-            <option value="by-nc">BY-NC</option>
-            <option value="by-nd">BY-ND</option>
-            <option value="by-sa">BY-SA</option>
-            <option value="by-nc-nd">BY-NC-ND</option>
-            <option value="by-nc-sa">BY-NC-SA</option>
+            <option'. $byselected .' value="by" >BY</option>
+            <option'. $byncselected .' value="by-nc">BY-NC</option>
+            <option'. $byndselected .' value="by-nd">BY-ND</option>
+            <option'. $bysaselected .' value="by-sa">BY-SA</option>
+            <option'. $byncndselected .' value="by-nc-nd">BY-NC-ND</option>
+            <option'. $byncsaselected .' value="by-nc-sa">BY-NC-SA</option>
         </select>';
     
     $form_fields['cc_license'] = array(
@@ -79,7 +83,7 @@ label {
         'helps' => __('Choose a Creative Commons License.')
         );
 
-    $html = '<input type="text" id="cc_rights_holder" name="attachments['. $post->ID .'][cc_rights_holder]" value=""/>';
+    $html = '<input type="text" id="cc_rights_holder" name="attachments['. $post->ID .'][cc_rights_holder]" value="'. get_post_meta($id, 'cc_rights_holder', true) .'"/>';
 
     $form_fields['cc_rights_holder'] = array(
         'label' => __('Rights holder'),
@@ -87,7 +91,7 @@ label {
         'html' => $html
         );
 
-    $html = '<input type="url" id="cc_attribution_url" name="attachments['. $post->ID .'][cc_attribution_url]" value=""/>';
+    $html = '<input type="url" id="cc_attribution_url" name="attachments['. $post->ID .'][cc_attribution_url]" value="'. get_post_meta($id, 'cc_attribution_url', true) .'"/>';
 
     $form_fields['cc_attribution_url'] = array(
         'label' => __('Attribution') .' <abbr title="Uniform Resource Locator">URL</abbr>',
@@ -98,20 +102,23 @@ label {
     return $form_fields;
 }
 
-function cc_wordpress_update_or_add($id, $key, $value) {
-    if(!update_post_meta($id, $key, $value)) {
-        add_post_meta($id, $key, $val);
-    };
+function cc_wordpress_update_or_add_or_delete($id, $key, $value) {
+    if ($value != '') {
+        if(!update_post_meta($id, $key, $value)) {
+            add_post_meta($id, $key, $value);
+        };
+    } else {
+        delete_post_meta($id, $key);
+    }
 }
 
 function cc_wordpress_attachment_fields_to_save($post, $attachment) {
 
     $id = $post['ID'];
-    if ($attachment['cc_license']!='') {
-        cc_wordpress_update_or_add($id, 'cc_license', $attachment['cc_license']);
-    } else {
-        delete_post_meta($id, 'cc_license');
-    }
+
+    cc_wordpress_update_or_add_or_delete($id, 'cc_license', $attachment['cc_license']);
+    cc_wordpress_update_or_add_or_delete($id, 'cc_rights_holder', $attachment['cc_rights_holder']);
+    cc_wordpress_update_or_add_or_delete($id, 'cc_attribution_url', $attachment['cc_attribution_url']);
     
 //    $post['cc_license'] = $attachment['cc_license'];
 //    $post['cc_rights_holder'] = $attachment['cc_rights_holder'];
@@ -203,6 +210,6 @@ add_filter('attachment_fields_to_edit', 'cc_wordpress_fields_to_edit', 11, 2);
 // TODO: this is not working at the moment
 add_filter('attachment_fields_to_save', 'cc_wordpress_attachment_fields_to_save', 11, 2);
 
-//
+// send to wordpress editor
 add_filter('media_send_to_editor', 'cc_wordpress_media_send_to_editor', 11, 3);
 ?>

@@ -106,7 +106,7 @@ function cc_wordpress_update_or_add($id, $key, $value) {
 
 function cc_wordpress_attachment_fields_to_save($post, $attachment) {
 
-    $id = $post->ID;
+    $id = $post['ID'];
     if ($attachment['cc_license']!='') {
         cc_wordpress_update_or_add($id, 'cc_license', $attachment['cc_license']);
     } else {

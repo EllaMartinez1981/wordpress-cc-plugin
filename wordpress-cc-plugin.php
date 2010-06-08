@@ -90,7 +90,7 @@ label {
     $html = '<input type="url" id="cc_attribution_url" name="attachments['. $post->ID .'][cc_attribution_url]" value=""/>';
 
     $form_fields['cc_attribution_url'] = array(
-        'label' => __('Attribution') .'<abbr title="Uniform Resource Locator">URL</abbr>',
+        'label' => __('Attribution') .' <abbr title="Uniform Resource Locator">URL</abbr>',
         'input' => 'html',
         'html' => $html
         );

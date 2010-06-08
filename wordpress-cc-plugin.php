@@ -2,12 +2,12 @@
 /**
  * @package wordpress-cc-plugin
  * @author Nils Dagsson Moskopp // erlehmann
- * @version 0.2
+ * @version 0.3
  */
 /*
 Plugin Name: Wordpress CC Plugin
 Plugin URI: http://labs.creativecommons.org/2010/05/24/gsoc-project-introduction-cc-wordpress-plugin/
-Description: The Wordpress interface for managing media will be extended to have an option to specify a CC license for uploaded content. The Wordpress interface for writing blog posts will be extended so that when aforementioned content is inserted into an article, the correct markup will be generated.
+Description: The Wordpress interface for managing media is extended to have an option to specify a CC license for uploaded content. When aforementioned content is inserted into an article, the RDFa-enriched markup is generated.
 Author: Nils Dagsson Moskopp // erlehmann
 Version: 0.1
 Author URI: http://dieweltistgarnichtso.net

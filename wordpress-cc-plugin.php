@@ -143,10 +143,13 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
     $alt = $attachment['image_alt'];
 
     if ($type == 'image') {
+        $dmci_type_url = 'http://purl.org/dc/dcmitype/Image';
         $media_html  = '<img src="'. $url .'" alt="'. $alt .'"/>';
     } elseif ($type == 'audio') {
+        $dmci_type_url = 'http://purl.org/dc/dcmitype/Sound';
         $media_html = '<audio src="'. $url . '"/>';
     } elseif ($type == 'video') {
+        $dmci_type_url = 'http://purl.org/dc/dcmitype/MovingImage';
         $media_html = '<video src="'. $url .'"/>';
     } else {
         $media_html = '<object src="'. $url .'"/>';
@@ -194,15 +197,15 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
             break;
     }
 
-    $title = $attachment->post_excerpt;
+    $title = $attachment['post_excerpt'];
 
     // TODO: RDFa / Microdata switch (currently only RDFa supported)
 
     // produce caption
-    $caption_html = '<span href="http://purl.org/dc/dcmitype/Text" property="dc:title" rel="dc:type">'. $title .'</span> <a href="'. $attribution_url .'" property="cc:attributionName" rel="cc:attributionURL">'. $attribution_name .'</a> <small> <a href="'. $license_url .'" rel="license"> <abbr title="'. $license_full .'">'. $license_abbr .'</abbr> </a> </small>';
+    $caption_html = '<span href="'. $dmci_type_url .'" property="dc:title" rel="dc:type">'. $title .'</span> <a href="'. $attribution_url .'" property="cc:attributionName" rel="cc:attributionURL">'. $attribution_name .'</a> <small> <a href="'. $license_url .'" rel="license"> <abbr title="'. $license_full .'">'. $license_abbr .'</abbr> </a> </small>';
 
     // add figure element
-    $html = '<figure xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/terms/"> '. $media_html .' <figcaption> '. $caption_html .'</figcaption> </figure>';
+    $html = '<figure about="'. $url .'" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/terms/"> '. $media_html .' <figcaption> '. $caption_html .'</figcaption> </figure>';
 
     return $html;
 }

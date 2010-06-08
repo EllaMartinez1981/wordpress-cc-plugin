@@ -31,6 +31,15 @@ abbr {
     border-bottom: 1px dotted black;
 }
 
+#cc_license {
+    margin-right: 1em;
+}
+
+#cc_license,
+#cc_license + p {
+    display: inline-block;
+}
+
 #cc_attribution_url,
 #cc_rights_holder {
     -moz-border-radius-bottomleft: 4px;

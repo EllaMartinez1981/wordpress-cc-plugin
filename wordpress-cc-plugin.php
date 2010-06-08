@@ -13,6 +13,14 @@ Version: 0.1
 Author URI: http://dieweltistgarnichtso.net
 */
 
+// this function helps creating the select thingy in cc_wordpress_fields_to_edit()
+function cc_wordpress_option_value_selected($license, $value, $label) {
+    if ($license == $value) {
+        $selected = ' "selected="selected"';
+    }
+    return '<option value="'. $value .'"'. $selected .'>'. $label .'</option>';
+}
+
 // this function adds attachment fields to the media manager
 function cc_wordpress_fields_to_edit($form_fields, $post) {
 ?>
@@ -58,22 +66,15 @@ label {
 
     $license = get_post_meta($id, 'cc_license', true);
 
-    $byselected = ($license == "by") ? ' selected="selected"' : '';
-    $byncselected = ($license == "by-nc") ? ' selected="selected"' : '';
-    $byndselected = ($license == "by-nd") ? ' selected="selected"' : '';
-    $bysaselected = ($license == "by-sa") ? ' selected="selected"' : '';
-    $byncndselected = ($license == "by-nc-nd") ? ' selected="selected"' : '';
-    $byncsaselected = ($license == "by-nc-sa") ? ' selected="selected"' : '';
-
     $html = '
         <select id="cc_license" name="attachments['. $post->ID .'][cc_license]">
-            <option value="">(none)</option>
-            <option'. $byselected .' value="by" >BY</option>
-            <option'. $byncselected .' value="by-nc">BY-NC</option>
-            <option'. $byndselected .' value="by-nd">BY-ND</option>
-            <option'. $bysaselected .' value="by-sa">BY-SA</option>
-            <option'. $byncndselected .' value="by-nc-nd">BY-NC-ND</option>
-            <option'. $byncsaselected .' value="by-nc-sa">BY-NC-SA</option>
+            '. cc_wordpress_option_value_selected($license, '', __('(none)')) .'
+            '. cc_wordpress_option_value_selected($license, 'by', __('BY')) .'
+            '. cc_wordpress_option_value_selected($license, 'by-nc', __('BY-NC')) .'
+            '. cc_wordpress_option_value_selected($license, 'by-nd', __('BY-ND')) .'
+            '. cc_wordpress_option_value_selected($license, 'by-sa', __('BY-SA')) .'
+            '. cc_wordpress_option_value_selected($license, 'by-nc-nd', __('BY-NC-SA')) .'
+            '. cc_wordpress_option_value_selected($license, 'by-nc-sa', __('BY-NC-ND')) .'
         </select>';
     
     $form_fields['cc_license'] = array(

@@ -202,7 +202,7 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
     $caption_html = '<span href="http://purl.org/dc/dcmitype/Text" property="dc:title" rel="dc:type">'. $title .'</span> <a href="'. $attribution_url .'" property="cc:attributionName" rel="cc:attributionURL">'. $attribution_name .'</a> <small> <a href="'. $license_url .'" rel="license"> <abbr title="'. $license_full .'">'. $license_abbr .'</abbr> </a> </small>';
 
     // add figure element
-    $html = '<figure xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"> '. $media_html .' <figcaption> '. $caption_html .'</figcaption> </figure>';
+    $html = '<figure xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/terms/"> '. $media_html .' <figcaption> '. $caption_html .'</figcaption> </figure>';
 
     return $html;
 }

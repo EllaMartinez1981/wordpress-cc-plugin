@@ -13,6 +13,7 @@
 <h2>Changelog</h2>
 
 <ol>
+    <li><b>0.4</b>: added stylesheets, admin interface</li>
     <li><b>0.3</b>: saving and retrieving of license metadata now possible</li>
     <li><b>0.2</b>: added functional interface, RDFa generation</li>
     <li><b>0.1</b>: added dummy interface</li>

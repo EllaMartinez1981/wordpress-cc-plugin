@@ -5,7 +5,7 @@
 <h2>Installation</h2>
 
 <ol>
-    <li>Move the wordpress-cc-plugin file into /wp-contents/plugins/</li>
+    <li>Move the contents of the wordpress-cc-plugin/ directory into /wp-contents/plugins/</li>
     <li>???</li>
     <li>Profit.</li>
 </ol>
@@ -13,5 +13,7 @@
 <h2>Changelog</h2>
 
 <ol>
+    <li><b>0.3</b>: saving and retrieving of license metadata now possible</li>
+    <li><b>0.2</b>: added functional interface, RDFa generation</li>
     <li><b>0.1</b>: added dummy interface</li>
 </ol>

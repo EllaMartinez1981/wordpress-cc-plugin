@@ -2,16 +2,154 @@
 /**
  * @package wordpress-cc-plugin
  * @author Nils Dagsson Moskopp // erlehmann
- * @version 0.3
+ * @version 0.4
  */
 /*
 Plugin Name: Wordpress CC Plugin
 Plugin URI: http://labs.creativecommons.org/2010/05/24/gsoc-project-introduction-cc-wordpress-plugin/
-Description: The Wordpress interface for managing media is extended to have an option to specify a CC license for uploaded content. When aforementioned content is inserted into an article, the RDFa-enriched markup is generated.
+Description: The Wordpress interface for managing media is extended to have an option to specify a CC license for uploaded content. When aforementioned content is inserted into an article, RDFa-enriched markup is generated.
 Author: Nils Dagsson Moskopp // erlehmann
-Version: 0.3
+Version: 0.4
 Author URI: http://dieweltistgarnichtso.net
 */
+
+/* install and uninstall */
+
+// create database entry on install
+function cc_wordpress_register_settings() {
+    register_setting('cc_wordpress_options', 'cc_wordpress_css');
+}
+
+// delete database entry on uninstall
+function cc_wordpress_uninstall(){
+    delete_option('cc_wordpress_css');
+}
+
+// install hook
+register_activation_hook(__FILE__,'cc_wordpress_install');
+
+// uninstall hook
+register_uninstall_hook(__FILE__, 'cc_wordpress_uninstall');
+
+/* administration */
+
+// output checked attribute if appropriate
+function cc_wordpress_admin_checked($key, $value) {
+    if (get_option($key) == $value) {
+        return ' checked="checked"';
+    }
+}
+
+// generate list of css files
+function cc_wordpress_admin_css_list() {
+
+    // FIXME: get path the proper way
+    $path = '../wp-content/plugins/wordpress-cc-plugin/css/';
+    $directory = opendir($path);
+
+    $html = '';
+
+    if($directory){
+        while (false !== ($file = readdir($directory))) {
+            if($file !== '.' && $file !== '..'){
+                $html .= '
+<li>
+    <label><input type="radio" name="cc_wordpress_css" value="'. $file .'"';
+
+                $html .= cc_wordpress_admin_checked('cc_wordpress_css', $file);
+
+                $html .= '/><i>'. substr($file, 0, -4) .'</i></label>
+    <img src="'. substr($path, 0, -4) .'css-preview/'. substr($file, 0, -3) .'png"/>
+</li>';
+    // maybe use real path editing facilities ? but then, this already works.
+            }
+        }
+    }
+
+    closedir($directory);
+
+    return $html;
+}
+
+// admin page
+function cc_wordpress_admin_page() {
+    ?>
+
+<style scoped="scoped">
+
+img {
+    vertical-align: middle;
+}
+
+label {
+    display: inline-block;
+    min-width: 160px;
+}
+
+label input {
+    margin: 1em;
+}
+</style>
+
+<div class="wrap">
+    <form method="post" action="options.php">
+
+        <?php
+        settings_fields('cc_wordpress_options');
+        ?>
+
+        <h2>Stylesheet</h2>
+        <p>
+            A stylesheet changes the look of the license attribution.
+        </p>
+        <ul>
+
+            <?php
+                echo cc_wordpress_admin_css_list();
+            ?>
+
+            <li>
+                <label><input type="radio" name="cc_wordpress_css" value=""<?php
+                    echo cc_wordpress_admin_checked('cc_wordpress_css','');
+                ?>/><?php
+                    echo __('no stylesheet');
+                ?></label>
+            </li>
+        </ul>
+
+        <div class="submit">
+            <input type="submit" class="button-primary" value="<?php
+                echo __('Save Changes');
+            ?>" />
+        </div>
+    </form>
+</div>
+
+    <?php
+}
+
+// add admin menu entry
+function cc_wordpress_plugin_menu() {
+    add_options_page('CC Wordpress', 'CC Wordpress', 8, __FILE__, 'cc_wordpress_admin_page');
+}
+
+// add admin pages
+if(is_admin()) {
+    add_action( 'admin_init', 'cc_wordpress_register_settings');
+    add_action('admin_menu', 'cc_wordpress_plugin_menu');
+}
+
+/* actual plugin functionality */
+
+// output link to chosen CSS
+function cc_wordpress_add_css() {
+    if (get_option('cc_wordpress_css')) {
+        echo '<link rel="stylesheet" href="'. get_bloginfo('url') .'/wp-content/plugins/wordpress-cc-plugin/css/'. get_option('cc_wordpress_css') .'" type="text/css"/>';
+    }
+}
+
+// add CSS to all pages
+add_action('wp_head', 'cc_wordpress_add_css');
 
 // this function helps creating the select thingy in cc_wordpress_fields_to_edit()
 function cc_wordpress_option_value_selected($license, $value, $label) {
@@ -25,7 +163,7 @@ function cc_wordpress_option_value_selected($license, $value, $label) {
 function cc_wordpress_fields_to_edit($form_fields, $post) {
 ?>
 
-<style>
+<style scoped="scoped">
 
 abbr {
     border-bottom: 1px dotted black;

@@ -169,6 +169,30 @@ abbr {
     border-bottom: 1px dotted black;
 }
 
+label {
+    display: inline-block !important;
+    font-size: 13px;
+    font-weight: bold;
+    width: 130px;
+}
+
+    label img {
+        position: relative;
+        top: 7px;
+        margin-top: -7px;
+    }
+
+table {
+    border-collapse: collapse;
+}
+
+.cc_license > th,
+.cc_license > td {
+    border-top: 1px solid #c0c0c0;
+    border-style: solid;
+    padding-top: 7px !important;
+}
+
 #cc_license {
     margin-right: 1em;
 }
@@ -190,20 +214,6 @@ abbr {
     border-radius: 4px;
     width: 460px;
 }
-
-label {
-    display: inline-block;
-    font-size: 13px;
-    font-weight: bold;
-    margin: 0.5em;
-    width: 130px;
-}
-
-    label img {
-        position: relative;
-        top: 7px;
-        margin-top: -7px;
-    }
 
 </style>
 

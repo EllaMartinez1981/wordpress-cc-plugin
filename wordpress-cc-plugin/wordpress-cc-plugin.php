@@ -273,6 +273,12 @@ function cc_wordpress_attachment_fields_to_save($post, $attachment) {
 
 function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
     $post =& get_post($attachment_id);
+    $id = $post->ID;
+
+    // save licensing information before sending to editor
+    cc_wordpress_update_or_add_or_delete($id, 'cc_license', $attachment['cc_license']);
+    cc_wordpress_update_or_add_or_delete($id, 'cc_rights_holder', $attachment['cc_rights_holder']);
+    cc_wordpress_update_or_add_or_delete($id, 'cc_attribution_url', $attachment['cc_attribution_url']);
 
     $type = substr($post->post_mime_type, 0, 5);
 

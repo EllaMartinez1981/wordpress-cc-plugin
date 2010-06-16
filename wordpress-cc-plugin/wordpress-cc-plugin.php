@@ -314,7 +314,16 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
 
     // TODO: license version and jurisdiction
     $license = $attachment['cc_license'];
-    $license_url = 'http://creativecommons.org/licenses/'. $license .'/3.0/';
+
+    // grab license information through CC API
+    $rest = file_get_contents('http://api.creativecommons.org/rest/1.5/license/standard/get');
+
+    if ($rest) {
+        preg_match('/<license-uri>(.*?)<\/license-uri>/', $rest, $matches);
+        $license_url = str_replace('/by/', '/'. $license .'/' , $matches[1]);
+    } else {
+        $license_url = 'http://creativecommons.org/licenses/'. $license .'/3.0/';
+    }
 
     switch ($license) {
         case "":

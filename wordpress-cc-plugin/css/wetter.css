@@ -85,6 +85,7 @@ figure[about] > figcaption {
 
             figure[about] > figcaption small a abbr {
                 border: none !important;
+                cursor: pointer;
                 display: block;
                 height: 100%;
                 width: 100%;

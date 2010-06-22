@@ -283,7 +283,6 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
 
     $type = substr($post->post_mime_type, 0, 5);
 
-    // TODO: get proper URL
     $url = $attachment['url'];
     $alt = $attachment['image_alt'];
 
@@ -352,8 +351,6 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
     }
 
     $title = $attachment['post_excerpt'];
-
-    // TODO: RDFa / Microdata switch (currently only RDFa supported)
 
     // produce caption
     $caption_html = '<span href="'. $dmci_type_url .'" property="dc:title" rel="dc:type">'. $title .'</span> <a href="'. $attribution_url .'" property="cc:attributionName" rel="cc:attributionURL">'. $attribution_name .'</a> <small> <a href="'. $license_url .'" rel="license"> <abbr title="'. $license_full .'">'. $license_abbr .'</abbr> </a> </small>';

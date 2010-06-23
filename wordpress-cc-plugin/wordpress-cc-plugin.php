@@ -215,15 +215,15 @@ table {
 
     $current_license = get_post_meta($id, 'cc_license', true);
 
-    $html = "<select id='cc_license' name='attachments[$id][cc_license]'>\n";
-    $html .= "    <option value=''>All rights reserved.</option>\n";
+    $html  = '<select id="cc_license" name="attachments['. $id .'][cc_license]">';
+    $html .= '<option value="">' . __('All rights reserved.') .'</option>';
     $licenses = array('by', 'by-nc', 'by-nc-nd', 'by-nc-sa', 'by-nd', 'by-sa');
     foreach ( $licenses as $license ) {
-        $selected = ( $license == $current_license ) ? "selected='selected'" : '';
+        $selected = ( $license == $current_license ) ? ' selected="selected"' : '';
         $license_upper = strtoupper($license);
-        $html .= "    <option value='$license' $selected>$license_upper</option>\n";
+        $html .= '<option value="'. $license .'"'. $selected .'>'. $license_upper .'</option>';
     }
-    $html .= "</select>";
+    $html .= '</select>';
     
     $form_fields['cc_license'] = array(
         'label' => '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAQAAABuvaSwAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAABJ0AAASdAXw0a6EAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAABmklEQVQoz5XTPWiTURTG8d8b/GjEii2VKoqKi2DFwU9wUkTdFIeKIEWcpIOTiA4OLgVdXFJwEZHoIII0TiJipZJFrIgGKXQQCRg6RKREjEjMcQnmTVPB3jNc7j1/7nk49zlJ+P+1rPsqydqFD1HvSkUq9MkpaQihoWRcfzqftGUkx9y10Yy33vlttz2GzBmNQtfLrmqqGu6odNKccOvvubXt1/Da+tAZBkwKx1OwHjNqti1EQ7DBN2Vr2vBl4cJiaAjOCdfbcMF3mWC7O6qmDFntms9KzgYZNU/bcFkxBM+UjXjiilFNl4yZsCIoqrRgA0IuGNRws1W66H1KSE5YFzKoa+pFTV0/ydYk66s+kt5kE1ilqd7qs49KIcj75bEfxp0RJn0yKxtMm21rzmtYG6x0Wt5Fy4ODbhuzJejx06M2PCzc+2frbgjn0z9YEE4tih7Q8FyShgdVzRvpQk+omLe5wxvBIV+ECTtkQpCx00Oh4ugCI7XcfF8INa9MqQnhQdrRSedYJYcdsc9eTHvjRbzsyC5lBjNLYP0B5PQk1O2dJT8AAAAASUVORK5CYII="/ alt="Creative Commons"> '. __('License'),

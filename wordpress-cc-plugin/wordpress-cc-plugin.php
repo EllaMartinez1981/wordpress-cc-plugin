@@ -269,6 +269,19 @@ function cc_wordpress_attachment_fields_to_save($post, $attachment) {
     cc_wordpress_update_or_add_or_delete($id, 'cc_rights_holder', $attachment['cc_rights_holder']);
     cc_wordpress_update_or_add_or_delete($id, 'cc_attribution_url', $attachment['cc_attribution_url']);
 
+    // grab license information through CC API
+    $rest = file_get_contents('http://api.creativecommons.org/rest/1.5/license/standard/get');
+    $license = get_post_meta($id, 'cc_license', true);
+
+    if ($rest) {
+        preg_match('/<license-uri>(.*?)<\/license-uri>/', $rest, $matches);
+        $license_url = str_replace('/by/', '/'. $license .'/' , $matches[1]);
+    } else {
+        $license_url = 'http://creativecommons.org/licenses/'. $license .'/3.0/';
+    }
+
+    cc_wordpress_update_or_add_or_delete($id, 'cc_license_url', $license_url);
+
     return $post;
 }
 
@@ -313,17 +326,7 @@ function cc_wordpress_create_figure($attachment_id, $title) {
 
     // TODO: license version and jurisdiction
     $license = get_post_meta($id, 'cc_license', true);
-
-    // grab license information through CC API
-    // FIXME: do not do this with every page load
-    $rest = file_get_contents('http://api.creativecommons.org/rest/1.5/license/standard/get');
-
-    if ($rest) {
-        preg_match('/<license-uri>(.*?)<\/license-uri>/', $rest, $matches);
-        $license_url = str_replace('/by/', '/'. $license .'/' , $matches[1]);
-    } else {
-        $license_url = 'http://creativecommons.org/licenses/'. $license .'/3.0/';
-    }
+    $license_url = $attribution_url = get_post_meta($id, 'cc_license_url', true);
 
     switch ($license) {
         case "":

@@ -281,10 +281,21 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
     cc_wordpress_update_or_add_or_delete($id, 'cc_rights_holder', $attachment['cc_rights_holder']);
     cc_wordpress_update_or_add_or_delete($id, 'cc_attribution_url', $attachment['cc_attribution_url']);
 
+    $title = $attachment['post_excerpt'];
+
+    # example output: "[[cc:18|some caption]]"
+    $embed_code = '[[cc:' . $attachment_id .'|' .$title. ']]';
+    return $embed_code;
+}
+
+function cc_wordpress_create_figure($attachment_id, $title) {
+    $post =& get_post($attachment_id);
+    $id = $post->ID;
+
     $type = substr($post->post_mime_type, 0, 5);
 
-    $url = $attachment['url'];
-    $alt = $attachment['image_alt'];
+    $url = wp_get_attachment_url($id);
+    $alt = get_post_meta($id, '_wp_attachment_image_alt', true);
 
     if ($type == 'image') {
         $dmci_type_url = 'http://purl.org/dc/dcmitype/Image';
@@ -299,13 +310,14 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
         $media_html = '<object src="'. $url .'"/>';
     }
 
-    $attribution_name = $attachment['cc_rights_holder'];
-    $attribution_url = $attachment['cc_attribution_url'];
+    $attribution_name = get_post_meta($id, 'cc_rights_holder', true);
+    $attribution_url = get_post_meta($id, 'cc_attribution_url', true);
 
     // TODO: license version and jurisdiction
-    $license = $attachment['cc_license'];
+    $license = get_post_meta($id, 'cc_license', true);
 
     // grab license information through CC API
+    // FIXME: do not do this with every page load
     $rest = file_get_contents('http://api.creativecommons.org/rest/1.5/license/standard/get');
 
     if ($rest) {
@@ -318,7 +330,7 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
     switch ($license) {
         case "":
             // no license, just return standard markup
-            return $html;
+            return wp_get_attachment_image($id);
         case "by":
             $license_abbr = 'CC BY';
             $license_full = 'Creative Commons'. __('Attribution');
@@ -350,8 +362,6 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
             break;
     }
 
-    $title = $attachment['post_excerpt'];
-
     // produce caption
     $caption_html = '<span href="'. $dmci_type_url .'" property="dc:title" rel="dc:type">'. $title .'</span> <a href="'. $attribution_url .'" property="cc:attributionName" rel="cc:attributionURL">'. $attribution_name .'</a> <small> <a href="'. $license_url .'" rel="license"> <abbr title="'. $license_full .'">'. $license_abbr .'</abbr> </a> </small>';
 
@@ -360,6 +370,26 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
 
     return $html;
 }
+
+function cc_wordpress_page_filter($page) {
+    # example match: "[[cc:18|some caption]]"
+    preg_match_all('/\[\[cc:([0-9].*?)\|(.*?)\]\]/', $page, $matches, PREG_SET_ORDER);
+
+    foreach ($matches as $match) {
+        $page = $page . $match[0] . $match[1] . $match[2];
+        $figure = cc_wordpress_create_figure($match[1], $match[2]);
+        $page = str_replace($match[0], $figure, $page);
+    }
+
+    return $page;
+}
+
+function cc_wordpress_template_redirect(){
+    ob_start('cc_wordpress_page_filter');
+}
+
+// apply filter
+add_action('template_redirect', 'cc_wordpress_template_redirect');
 
 // add attachment fields
 add_filter('attachment_fields_to_edit', 'cc_wordpress_fields_to_edit', 11, 2);

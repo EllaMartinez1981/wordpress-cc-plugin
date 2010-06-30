@@ -371,24 +371,20 @@ function cc_wordpress_create_figure($attachment_id, $title) {
     return $html;
 }
 
-function cc_wordpress_page_filter($page) {
+function cc_wordpress_article_filter($article) {
     # example match: "[[cc:18|some caption]]"
-    preg_match_all('/\[\[cc:([0-9].*?)\|(.*?)\]\]/', $page, $matches, PREG_SET_ORDER);
+    preg_match_all('/\[\[cc:([0-9].*?)\|(.*?)\]\]/', $article, $matches, PREG_SET_ORDER);
 
     foreach ($matches as $match) {
         $figure = cc_wordpress_create_figure($match[1], $match[2]);
-        $page = str_replace($match[0], $figure, $page);
+        $article = str_replace($match[0], $figure, $article);
     }
 
-    return $page;
+    return $article;
 }
 
-function cc_wordpress_template_redirect(){
-    ob_start('cc_wordpress_page_filter');
-}
-
-// apply filter
-add_action('template_redirect', 'cc_wordpress_template_redirect');
+// apply filter to articles before they are displayed
+add_action('the_content', 'cc_wordpress_article_filter');
 
 // add attachment fields
 add_filter('attachment_fields_to_edit', 'cc_wordpress_fields_to_edit', 11, 2);

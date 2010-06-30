@@ -376,7 +376,6 @@ function cc_wordpress_page_filter($page) {
     preg_match_all('/\[\[cc:([0-9].*?)\|(.*?)\]\]/', $page, $matches, PREG_SET_ORDER);
 
     foreach ($matches as $match) {
-        $page = $page . $match[0] . $match[1] . $match[2];
         $figure = cc_wordpress_create_figure($match[1], $match[2]);
         $page = str_replace($match[0], $figure, $page);
     }

@@ -45,6 +45,7 @@ figure[about] > figcaption {
             left:-110px;
             top:-33px;
             margin-bottom:-33px;
+            text-shadow: none !important;
         }
 
         figure[about] > figcaption small a[href*="by"] {

@@ -45,6 +45,7 @@ figure[about] figcaption:hover {
         padding: 0 0.5em;
         position: relative;
         text-decoration: underline;
+        text-shadow: none;
     }
 
     figure[about] figcaption small {

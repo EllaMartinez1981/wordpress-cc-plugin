@@ -18,11 +18,13 @@ Author URI: http://dieweltistgarnichtso.net
 // create database entry on install
 function cc_wordpress_register_settings() {
     register_setting('cc_wordpress_options', 'cc_wordpress_css');
+    register_setting('cc_wordpress_options', 'cc_wordpress_default_license');
 }
 
 // delete database entry on uninstall
 function cc_wordpress_uninstall(){
     delete_option('cc_wordpress_css');
+    delete_option('cc_wordpress_options', 'cc_wordpress_default_license');
 }
 
 // install hook
@@ -71,6 +73,39 @@ function cc_wordpress_admin_css_list() {
     return $html;
 }
 
+// generate license dropdown
+function cc_wordpress_license_select($current_license, $name, $mark_default) {
+    $html  = '<select id="cc_license" name="'. $name .'"">';
+
+    $licenses = array('reserved', 'by', 'by-nc', 'by-nc-nd', 'by-nc-sa', 'by-nd', 'by-sa');
+    foreach ($licenses as $license) {
+        $selected = ($license == $current_license) ? ' selected="selected"' : '';
+        $license_name = cc_wordpress_license_name($license, $mark_default);
+        $html .= '<option value="'. $license .'"'. $selected .'>'. $license_name .'</option>';
+    }
+
+    $html .= '</select>';
+
+    return $html;
+}
+
+//generate license name
+function cc_wordpress_license_name($license, $mark_default) {
+    $default_license = get_option('cc_wordpress_default_license');
+
+    if ($license == 'reserved') {
+        $license_name = __('All rights reserved.');
+    } else {
+        $license_name = strtoupper($license);
+
+        if ($license == $default_license and $mark_default == true) {
+            $license_name .= ' ' .__('(Default)');
+        }
+    }
+
+    return $license_name;
+}
+
 // admin page
 function cc_wordpress_admin_page() {
     ?>
@@ -97,6 +132,22 @@ label input {
         <?php
         settings_fields('cc_wordpress_options');
         ?>
+
+        <h2>Default License</h2>
+        <p>
+            Setting a default license pre-fills the license chooser form field with the chosen license.
+        </p>
+
+        <p>
+            <label>
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAQAAABuvaSwAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAABJ0AAASdAXw0a6EAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAABmklEQVQoz5XTPWiTURTG8d8b/GjEii2VKoqKi2DFwU9wUkTdFIeKIEWcpIOTiA4OLgVdXFJwEZHoIII0TiJipZJFrIgGKXQQCRg6RKREjEjMcQnmTVPB3jNc7j1/7nk49zlJ+P+1rPsqydqFD1HvSkUq9MkpaQihoWRcfzqftGUkx9y10Yy33vlttz2GzBmNQtfLrmqqGu6odNKccOvvubXt1/Da+tAZBkwKx1OwHjNqti1EQ7DBN2Vr2vBl4cJiaAjOCdfbcMF3mWC7O6qmDFntms9KzgYZNU/bcFkxBM+UjXjiilFNl4yZsCIoqrRgA0IuGNRws1W66H1KSE5YFzKoa+pFTV0/ydYk66s+kt5kE1ilqd7qs49KIcj75bEfxp0RJn0yKxtMm21rzmtYG6x0Wt5Fy4ODbhuzJejx06M2PCzc+2frbgjn0z9YEE4tih7Q8FyShgdVzRvpQk+omLe5wxvBIV+ECTtkQpCx00Oh4ugCI7XcfF8INa9MqQnhQdrRSedYJYcdsc9eTHvjRbzsyC5lBjNLYP0B5PQk1O2dJT8AAAAASUVORK5CYII=" alt="Creative Commons"/>
+
+                <?php
+                $current_license = get_option('cc_wordpress_default_license');
+                echo cc_wordpress_license_select($current_license, 'cc_wordpress_default_license', false);
+                ?>
+            </label>
+        </p>
 
         <h2>Stylesheet</h2>
         <p>
@@ -213,20 +264,17 @@ table {
 
     $id = $post->ID;
 
+    $default_license = get_option('cc_wordpress_default_license');
     $current_license = get_post_meta($id, 'cc_license', true);
-
-    $html  = '<select id="cc_license" name="attachments['. $id .'][cc_license]">';
-    $html .= '<option value="">' . __('All rights reserved.') .'</option>';
-    $licenses = array('by', 'by-nc', 'by-nc-nd', 'by-nc-sa', 'by-nd', 'by-sa');
-    foreach ( $licenses as $license ) {
-        $selected = ( $license == $current_license ) ? ' selected="selected"' : '';
-        $license_upper = strtoupper($license);
-        $html .= '<option value="'. $license .'"'. $selected .'>'. $license_upper .'</option>';
+    if ($current_license == '') {
+        $current_license = $default_license;
     }
-    $html .= '</select>';
+
+    $name = 'attachments['. $id .'][cc_license]';
+    $html = cc_wordpress_license_select($current_license, $name, true);
     
     $form_fields['cc_license'] = array(
-        'label' => '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAQAAABuvaSwAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAABJ0AAASdAXw0a6EAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAABmklEQVQoz5XTPWiTURTG8d8b/GjEii2VKoqKi2DFwU9wUkTdFIeKIEWcpIOTiA4OLgVdXFJwEZHoIII0TiJipZJFrIgGKXQQCRg6RKREjEjMcQnmTVPB3jNc7j1/7nk49zlJ+P+1rPsqydqFD1HvSkUq9MkpaQihoWRcfzqftGUkx9y10Yy33vlttz2GzBmNQtfLrmqqGu6odNKccOvvubXt1/Da+tAZBkwKx1OwHjNqti1EQ7DBN2Vr2vBl4cJiaAjOCdfbcMF3mWC7O6qmDFntms9KzgYZNU/bcFkxBM+UjXjiilFNl4yZsCIoqrRgA0IuGNRws1W66H1KSE5YFzKoa+pFTV0/ydYk66s+kt5kE1ilqd7qs49KIcj75bEfxp0RJn0yKxtMm21rzmtYG6x0Wt5Fy4ODbhuzJejx06M2PCzc+2frbgjn0z9YEE4tih7Q8FyShgdVzRvpQk+omLe5wxvBIV+ECTtkQpCx00Oh4ugCI7XcfF8INa9MqQnhQdrRSedYJYcdsc9eTHvjRbzsyC5lBjNLYP0B5PQk1O2dJT8AAAAASUVORK5CYII="/ alt="Creative Commons"> '. __('License'),
+        'label' => '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAQAAABuvaSwAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAABJ0AAASdAXw0a6EAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAABmklEQVQoz5XTPWiTURTG8d8b/GjEii2VKoqKi2DFwU9wUkTdFIeKIEWcpIOTiA4OLgVdXFJwEZHoIII0TiJipZJFrIgGKXQQCRg6RKREjEjMcQnmTVPB3jNc7j1/7nk49zlJ+P+1rPsqydqFD1HvSkUq9MkpaQihoWRcfzqftGUkx9y10Yy33vlttz2GzBmNQtfLrmqqGu6odNKccOvvubXt1/Da+tAZBkwKx1OwHjNqti1EQ7DBN2Vr2vBl4cJiaAjOCdfbcMF3mWC7O6qmDFntms9KzgYZNU/bcFkxBM+UjXjiilFNl4yZsCIoqrRgA0IuGNRws1W66H1KSE5YFzKoa+pFTV0/ydYk66s+kt5kE1ilqd7qs49KIcj75bEfxp0RJn0yKxtMm21rzmtYG6x0Wt5Fy4ODbhuzJejx06M2PCzc+2frbgjn0z9YEE4tih7Q8FyShgdVzRvpQk+omLe5wxvBIV+ECTtkQpCx00Oh4ugCI7XcfF8INa9MqQnhQdrRSedYJYcdsc9eTHvjRbzsyC5lBjNLYP0B5PQk1O2dJT8AAAAASUVORK5CYII=" alt="Creative Commons"> '. __('License'),
         'input' => 'html',
         'html'  => $html,
         'helps' => __('Choose a Creative Commons License.')
@@ -329,9 +377,6 @@ function cc_wordpress_create_figure($attachment_id, $title) {
     $license_url = get_post_meta($id, 'cc_license_url', true);
 
     switch ($license) {
-        case "":
-            // no license, just return standard markup
-            return wp_get_attachment_image($id);
         case "by":
             $license_abbr = 'CC BY';
             $license_full = 'Creative Commons'. __('Attribution');
@@ -361,6 +406,10 @@ function cc_wordpress_create_figure($attachment_id, $title) {
             $license_abbr = 'CC BY-NC-SA';
             $license_full = 'Creative Commons'. __('Attribution-Noncommercial-Share Alike');
             break;
+
+        default:
+            // no license, just return standard markup
+            return wp_get_attachment_image($id);
     }
 
     // produce caption

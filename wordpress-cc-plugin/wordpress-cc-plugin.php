@@ -326,7 +326,7 @@ function cc_wordpress_create_figure($attachment_id, $title) {
 
     // TODO: license version and jurisdiction
     $license = get_post_meta($id, 'cc_license', true);
-    $license_url = $attribution_url = get_post_meta($id, 'cc_license_url', true);
+    $license_url = get_post_meta($id, 'cc_license_url', true);
 
     switch ($license) {
         case "":

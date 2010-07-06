@@ -55,12 +55,13 @@ figure[about] figcaption:hover {
     figure[about] figcaption small,
     figure[about] figcaption small a,
     figure[about] figcaption small a abbr {
-            color: transparent;
+            color: transparent !important;
             border: none;
             display: block;
             height: 22px;
             margin: 0;
             padding: 0;
+            text-shadow: none !important;
             width: 22px;
     }
 

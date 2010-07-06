@@ -36,7 +36,7 @@ figure[about] figcaption:hover {
 
     figure[about] figcaption [property*=attributionName] {
         border: none;
-        color: inherit;
+        color: black;
         display: block;
         font-size: 12px;
         height: 22px;

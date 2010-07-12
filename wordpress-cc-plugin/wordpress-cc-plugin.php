@@ -19,12 +19,14 @@ Author URI: http://dieweltistgarnichtso.net
 function cc_wordpress_register_settings() {
     register_setting('cc_wordpress_options', 'cc_wordpress_css');
     register_setting('cc_wordpress_options', 'cc_wordpress_default_license');
+    register_setting('cc_wordpress_options', 'cc_wordpress_post_thumbnail_filter');
 }
 
 // delete database entry on uninstall
 function cc_wordpress_uninstall(){
-    delete_option('cc_wordpress_css');
-    delete_option('cc_wordpress_options', 'cc_wordpress_default_license');
+    unregister_setting('cc_wordpress_options', 'cc_wordpress_css');
+    unregister_setting('cc_wordpress_options', 'cc_wordpress_default_license');
+    unregister_setting('cc_wordpress_options', 'cc_wordpress_post_thumbnail_filter');
 }
 
 // install hook
@@ -146,6 +148,19 @@ label input {
                 $current_license = get_option('cc_wordpress_default_license');
                 echo cc_wordpress_license_select($current_license, 'cc_wordpress_default_license', false);
                 ?>
+            </label>
+        </p>
+
+        <h2>Post Thumbnail Filter</h2>
+        <p>
+            Specify if post thumbnail images should be replaced with <i>&lt;figure&gt;</i> elements.
+        </p>
+        <p>
+            <label>
+                Filter post thumbnails
+                <input type="checkbox" name="cc_wordpress_post_thumbnail_filter"<?php
+                    echo cc_wordpress_admin_checked('cc_wordpress_post_thumbnail_filter','on');
+                ?>/>
             </label>
         </p>
 
@@ -448,7 +463,9 @@ function cc_wordpress_article_filter($article) {
 }
 
 function cc_wordpress_post_thumbnail_filter($html, $post_id, $post_thumbnail_id, $size, $attr) {
-    $html = cc_wordpress_create_figure($post_thumbnail_id, '', $size, true);
+    if (get_option('cc_wordpress_post_thumbnail_filter') == 'on') {
+        $html = cc_wordpress_create_figure($post_thumbnail_id, '', $size, true);
+    }
 
     return $html;    
 }

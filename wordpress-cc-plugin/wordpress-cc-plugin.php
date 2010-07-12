@@ -347,7 +347,7 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
     return $embed_code;
 }
 
-function cc_wordpress_create_figure($attachment_id, $title) {
+function cc_wordpress_create_figure($attachment_id, $title, $size, $is_post_thumbnail) {
     $post =& get_post($attachment_id);
     $id = $post->ID;
 
@@ -362,7 +362,12 @@ function cc_wordpress_create_figure($attachment_id, $title) {
 
     if ($type == 'image') {
         $dmci_type_url = 'http://purl.org/dc/dcmitype/Image';
-        $media_html  = '<img src="'. $url .'" alt="'. $alt .'"/>';
+        if (isset($size)) {
+            $image = wp_get_attachment_image_src($id);
+            $media_html  = '<img src="'. $image[0] .'" alt="'. $alt .'"/>';
+        } else {
+            $media_html  = '<img src="'. $url .'" alt="'. $alt .'"/>';
+        }
     } elseif ($type == 'audio') {
         $dmci_type_url = 'http://purl.org/dc/dcmitype/Sound';
         $media_html = '<audio src="'. $url . '"/>';
@@ -419,8 +424,13 @@ function cc_wordpress_create_figure($attachment_id, $title) {
     // produce caption
     $caption_html = '<span href="'. $dmci_type_url .'" property="dc:title" rel="dc:type">'. $title .'</span> <a href="'. $attribution_url .'" property="cc:attributionName" rel="cc:attributionURL">'. $attribution_name .'</a> <small> <a href="'. $license_url .'" rel="license"> <abbr title="'. $license_full .'">'. $license_abbr .'</abbr> </a> </small>';
 
+    // add specific thumbnail class
+    if ($is_post_thumbnail == true) {
+        $post_thumbnail_class = 'class="post-thumbnail" ';
+    }
+
     // add figure element
-    $html = '<figure about="'. $url .'" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/terms/"> '. $media_html .' <figcaption> '. $caption_html .'</figcaption> </figure>';
+    $html = '<figure '. $post_thumbnail_class .'about="'. $url .'" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/terms/"> '. $media_html .' <figcaption> '. $caption_html .'</figcaption> </figure>';
 
     return $html;
 }
@@ -437,8 +447,17 @@ function cc_wordpress_article_filter($article) {
     return $article;
 }
 
+function cc_wordpress_post_thumbnail_filter($html, $post_id, $post_thumbnail_id, $size, $attr) {
+    $html = cc_wordpress_create_figure($post_thumbnail_id, '', $size, true);
+
+    return $html;    
+}
+
 // apply filter to articles before they are displayed
 add_action('the_content', 'cc_wordpress_article_filter');
+
+// apply filter to post thumbnail html
+add_filter( 'post_thumbnail_html', 'cc_wordpress_post_thumbnail_filter', 11, 5);
 
 // add attachment fields
 add_filter('attachment_fields_to_edit', 'cc_wordpress_fields_to_edit', 11, 2);

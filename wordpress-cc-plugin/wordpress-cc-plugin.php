@@ -347,7 +347,7 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
     return $embed_code;
 }
 
-function cc_wordpress_create_figure($attachment_id, $title, $size, $is_post_thumbnail) {
+function cc_wordpress_create_figure($attachment_id, $title, $size = '', $is_post_thumbnail = false) {
     $post =& get_post($attachment_id);
     $id = $post->ID;
 
@@ -362,11 +362,11 @@ function cc_wordpress_create_figure($attachment_id, $title, $size, $is_post_thum
 
     if ($type == 'image') {
         $dmci_type_url = 'http://purl.org/dc/dcmitype/Image';
-        if (isset($size)) {
+        if ($size == '') {
+            $media_html  = '<img src="'. $url .'" alt="'. $alt .'"/>';
+        } else {
             $image = wp_get_attachment_image_src($id);
             $media_html  = '<img src="'. $image[0] .'" alt="'. $alt .'"/>';
-        } else {
-            $media_html  = '<img src="'. $url .'" alt="'. $alt .'"/>';
         }
     } elseif ($type == 'audio') {
         $dmci_type_url = 'http://purl.org/dc/dcmitype/Sound';

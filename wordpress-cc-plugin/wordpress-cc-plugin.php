@@ -351,6 +351,10 @@ function cc_wordpress_create_figure($attachment_id, $title) {
     $post =& get_post($attachment_id);
     $id = $post->ID;
 
+    if ($title == '') {
+        $title = $post->post_excerpt;
+    }
+
     $type = substr($post->post_mime_type, 0, 5);
 
     $url = wp_get_attachment_url($id);

@@ -79,7 +79,7 @@ function cc_wordpress_admin_css_list() {
 function cc_wordpress_license_select($current_license, $name, $mark_default) {
     $html  = '<select id="cc_license" name="'. $name .'"">';
 
-    $licenses = array('reserved', 'by', 'by-nc', 'by-nc-nd', 'by-nc-sa', 'by-nd', 'by-sa');
+    $licenses = array('reserved', 'by', 'by-nc', 'by-nd', 'by-sa', 'by-nc-nd', 'by-nc-sa');
     foreach ($licenses as $license) {
         $selected = ($license == $current_license) ? ' selected="selected"' : '';
         $license_name = cc_wordpress_license_name($license, $mark_default);

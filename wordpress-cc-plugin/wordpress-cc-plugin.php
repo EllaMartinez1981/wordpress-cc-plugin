@@ -210,7 +210,7 @@ if(is_admin()) {
 // output link to chosen CSS
 function cc_wordpress_add_css() {
     if (get_option('cc_wordpress_css')) {
-        echo '<link rel="stylesheet" href="'. get_bloginfo('url') .'/wp-content/plugins/wordpress-cc-plugin/css/'. get_option('cc_wordpress_css') .'" type="text/css"/>';
+        echo '<link rel="stylesheet" href="'. WP_PLUGIN_URL .'/wordpress-cc-plugin/css/'. get_option('cc_wordpress_css') .'" type="text/css"/>';
     }
 }
 

@@ -385,12 +385,12 @@ function cc_wordpress_create_figure($attachment_id, $title, $size = '', $is_post
         }
     } elseif ($type == 'audio') {
         $dmci_type_url = 'http://purl.org/dc/dcmitype/Sound';
-        $media_html = '<audio src="'. $url . '"/>';
+        $media_html = '<audio src="'. $url . '"><a href="'. $url .'">audio download</a></audio>';
     } elseif ($type == 'video') {
         $dmci_type_url = 'http://purl.org/dc/dcmitype/MovingImage';
-        $media_html = '<video src="'. $url .'"/>';
+        $media_html = '<video src="'. $url .'"><a href="'. $url .'">video download</a></video>';
     } else {
-        $media_html = '<object src="'. $url .'"/>';
+        $media_html = '<object src="'. $url .'"><a href="'. $url .'">download</a></object>';
     }
 
     $attribution_name = get_post_meta($id, 'cc_rights_holder', true);

@@ -13,6 +13,17 @@ Version: 0.5
 Author URI: http://dieweltistgarnichtso.net
 */
 
+// A handy list of licenses and full names.
+$license_list = array(
+    'reserved' => 'All rights reserved.',
+    'by' => 'Attribution',
+    'by-nc' => 'Attribution Non-Commerical',
+    'by-nc-nd' => 'Attribution Non-Commercial No Derivatives',
+    'by-nc-sa' => 'Attribution Non-Commercial Share Alike',
+    'by-nd' => 'Attribution No Derivatives',
+    'by-sa' => 'Attribution Share Alike'
+);
+
 /* install and uninstall */
 
 // create database entry on install
@@ -76,13 +87,15 @@ function cc_wordpress_admin_css_list() {
 
 // generate license dropdown
 function cc_wordpress_license_select($current_license, $name, $mark_default) {
+
+    global $license_list;
+
     $html  = '<select id="cc_license" name="'. $name .'"">';
 
-    $licenses = array('reserved', 'by', 'by-nc', 'by-nd', 'by-sa', 'by-nc-nd', 'by-nc-sa');
-    foreach ($licenses as $license) {
-        $selected = ($license == $current_license) ? ' selected="selected"' : '';
-        $license_name = cc_wordpress_license_name($license, $mark_default);
-        $html .= '<option value="'. $license .'"'. $selected .'>'. $license_name .'</option>';
+    foreach ($license_list as $abbr => $license) {
+        $selected = ($abbr == $current_license) ? ' selected="selected"' : '';
+        $license_name = cc_wordpress_license_name($abbr, $mark_default);
+        $html .= '<option value="'. $abbr .'"'. $selected .'>'. $license_name .'</option>';
     }
 
     $html .= '</select>';
@@ -362,6 +375,9 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
 }
 
 function cc_wordpress_create_figure($attachment_id, $title, $size = '', $is_post_thumbnail = false) {
+
+    global $license_list;
+
     $post =& get_post($attachment_id);
     $id = $post->ID;
 
@@ -399,40 +415,12 @@ function cc_wordpress_create_figure($attachment_id, $title, $size = '', $is_post
     $license = get_post_meta($id, 'cc_license', true);
     $license_url = get_post_meta($id, 'cc_license_url', true);
 
-    switch ($license) {
-        case "by":
-            $license_abbr = 'CC BY';
-            $license_full = 'Creative Commons'. __('Attribution');
-            break;
-
-        case "by-nc":
-            $license_abbr = 'CC BY-NC';
-            $license_full = 'Creative Commons'. __('Attribution-Noncommercial');
-            break;
-
-        case "by-nd":
-            $license_abbr = 'CC BY-ND';
-            $license_full = 'Creative Commons'. __('Attribution-No Derivative Works');
-            break;
-
-        case "by-sa":
-            $license_abbr = 'CC BY-SA';
-            $license_full = 'Creative Commons'. __('Attribution-ShareAlike');
-            break;
-
-        case "by-nc-nd":
-            $license_abbr = 'CC BY-NC-ND';
-            $license_full = 'Creative Commons'. __('Attribution-Noncommercial-No Derivative Works');
-            break;
-
-        case "by-nc-sa":
-            $license_abbr = 'CC BY-NC-SA';
-            $license_full = 'Creative Commons'. __('Attribution-Noncommercial-Share Alike');
-            break;
-
-        default:
-            // no license, just return standard markup
-            return wp_get_attachment_image($id);
+    if ( $license ) {
+        $license_abbr = 'CC' . strtoupper($license);
+        $license_full = 'Creative Commons'. __($license_list($license));
+    } else {
+        // no license, just return standard markup
+        return wp_get_attachment_image($id);
     }
 
     // produce caption

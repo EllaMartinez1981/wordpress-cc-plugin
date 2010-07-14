@@ -47,8 +47,7 @@ function cc_wordpress_admin_checked($key, $value) {
 // generate list of css files
 function cc_wordpress_admin_css_list() {
 
-    // FIXME: get path the proper way
-    $path = '../wp-content/plugins/wordpress-cc-plugin/css/';
+    $path = WP_PLUGIN_DIR .'/wordpress-cc-plugin/css/';
     $directory = opendir($path);
 
     $html = '';
@@ -63,7 +62,7 @@ function cc_wordpress_admin_css_list() {
                 $html .= cc_wordpress_admin_checked('cc_wordpress_css', $file);
 
                 $html .= '/><i>'. substr($file, 0, -4) .'</i></label>
-    <img src="'. substr($path, 0, -4) .'css-preview/'. substr($file, 0, -3) .'png"/>
+    <img src="'. WP_PLUGIN_URL .'/wordpress-cc-plugin/css-preview/'. substr($file, 0, -3) .'png"/>
 </li>';
     // maybe use real path editing facilities ? but then, this already works.
             }

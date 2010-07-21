@@ -124,10 +124,20 @@ img {
 label {
     display: inline-block;
     min-width: 160px;
+    position: relative;
+    line-height: 3em;
 }
 
-label input {
-    margin: 1em;
+label input,
+label select {
+    margin: 0.5em;
+}
+
+label input[type=text],
+label input[type=url],
+label select {
+    position: absolute;
+    left: 128px;
 }
 </style>
 

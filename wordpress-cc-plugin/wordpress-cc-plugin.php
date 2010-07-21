@@ -19,6 +19,8 @@ Author URI: http://dieweltistgarnichtso.net
 function cc_wordpress_register_settings() {
     register_setting('cc_wordpress_options', 'cc_wordpress_css');
     register_setting('cc_wordpress_options', 'cc_wordpress_default_license');
+    register_setting('cc_wordpress_options', 'cc_wordpress_default_rights_holder');
+    register_setting('cc_wordpress_options', 'cc_wordpress_default_attribution_url');
     register_setting('cc_wordpress_options', 'cc_wordpress_post_thumbnail_filter');
 }
 
@@ -26,6 +28,8 @@ function cc_wordpress_register_settings() {
 function cc_wordpress_uninstall(){
     unregister_setting('cc_wordpress_options', 'cc_wordpress_css');
     unregister_setting('cc_wordpress_options', 'cc_wordpress_default_license');
+    unregister_setting('cc_wordpress_options', 'cc_wordpress_default_rights_holder');
+    unregister_setting('cc_wordpress_options', 'cc_wordpress_default_attribution_url');
     unregister_setting('cc_wordpress_options', 'cc_wordpress_post_thumbnail_filter');
 }
 
@@ -134,19 +138,35 @@ label input {
         settings_fields('cc_wordpress_options');
         ?>
 
-        <h2>Default License</h2>
+        <h2>License Defaults</h2>
         <p>
-            Setting a default license pre-fills the license chooser form field with the chosen license.
+            Setting default license, rights holder, and attribution URL pre-fills the license chooser form field with the chosen option.
         </p>
 
         <p>
             <label>
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAQAAABuvaSwAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAABJ0AAASdAXw0a6EAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAABmklEQVQoz5XTPWiTURTG8d8b/GjEii2VKoqKi2DFwU9wUkTdFIeKIEWcpIOTiA4OLgVdXFJwEZHoIII0TiJipZJFrIgGKXQQCRg6RKREjEjMcQnmTVPB3jNc7j1/7nk49zlJ+P+1rPsqydqFD1HvSkUq9MkpaQihoWRcfzqftGUkx9y10Yy33vlttz2GzBmNQtfLrmqqGu6odNKccOvvubXt1/Da+tAZBkwKx1OwHjNqti1EQ7DBN2Vr2vBl4cJiaAjOCdfbcMF3mWC7O6qmDFntms9KzgYZNU/bcFkxBM+UjXjiilFNl4yZsCIoqrRgA0IuGNRws1W66H1KSE5YFzKoa+pFTV0/ydYk66s+kt5kE1ilqd7qs49KIcj75bEfxp0RJn0yKxtMm21rzmtYG6x0Wt5Fy4ODbhuzJejx06M2PCzc+2frbgjn0z9YEE4tih7Q8FyShgdVzRvpQk+omLe5wxvBIV+ECTtkQpCx00Oh4ugCI7XcfF8INa9MqQnhQdrRSedYJYcdsc9eTHvjRbzsyC5lBjNLYP0B5PQk1O2dJT8AAAAASUVORK5CYII=" alt="Creative Commons"/>
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAQAAABuvaSwAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAABJ0AAASdAXw0a6EAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAABmklEQVQoz5XTPWiTURTG8d8b/GjEii2VKoqKi2DFwU9wUkTdFIeKIEWcpIOTiA4OLgVdXFJwEZHoIII0TiJipZJFrIgGKXQQCRg6RKREjEjMcQnmTVPB3jNc7j1/7nk49zlJ+P+1rPsqydqFD1HvSkUq9MkpaQihoWRcfzqftGUkx9y10Yy33vlttz2GzBmNQtfLrmqqGu6odNKccOvvubXt1/Da+tAZBkwKx1OwHjNqti1EQ7DBN2Vr2vBl4cJiaAjOCdfbcMF3mWC7O6qmDFntms9KzgYZNU/bcFkxBM+UjXjiilFNl4yZsCIoqrRgA0IuGNRws1W66H1KSE5YFzKoa+pFTV0/ydYk66s+kt5kE1ilqd7qs49KIcj75bEfxp0RJn0yKxtMm21rzmtYG6x0Wt5Fy4ODbhuzJejx06M2PCzc+2frbgjn0z9YEE4tih7Q8FyShgdVzRvpQk+omLe5wxvBIV+ECTtkQpCx00Oh4ugCI7XcfF8INa9MqQnhQdrRSedYJYcdsc9eTHvjRbzsyC5lBjNLYP0B5PQk1O2dJT8AAAAASUVORK5CYII=" alt="Creative Commons"/> License
 
                 <?php
                 $current_license = get_option('cc_wordpress_default_license');
                 echo cc_wordpress_license_select($current_license, 'cc_wordpress_default_license', false);
                 ?>
+            </label>
+        </p>
+
+       <p>
+            <label>
+                Rights Holder
+
+                <input type="text" name="cc_wordpress_default_rights_holder" value="<?php echo get_option('cc_wordpress_default_rights_holder'); ?>"/>
+            </label>
+        </p>
+
+       <p>
+            <label>
+                Attribution URL
+
+                <input type="url" name="cc_wordpress_default_attribution_url" value="<?php echo get_option('cc_wordpress_default_attribution_url'); ?>"/>
             </label>
         </p>
 
@@ -156,10 +176,10 @@ label input {
         </p>
         <p>
             <label>
-                Filter post thumbnails
                 <input type="checkbox" name="cc_wordpress_post_thumbnail_filter"<?php
                     echo cc_wordpress_admin_checked('cc_wordpress_post_thumbnail_filter','on');
                 ?>/>
+                Filter post thumbnails
             </label>
         </p>
 
@@ -299,7 +319,8 @@ table {
     $form_fields['cc_rights_holder'] = array(
         'label' => __('Rights holder'),
         'input' => 'html',
-        'html' => $html
+        'html' => $html,
+        'helps' => __('If you leave this field empty, the default ') . ' (' . get_option('cc_wordpress_default_rights_holder') . ') will be displayed.'
         );
 
     $html = '<input type="url" id="cc_attribution_url" name="attachments['. $post->ID .'][cc_attribution_url]" value="'. get_post_meta($id, 'cc_attribution_url', true) .'"/>';
@@ -307,7 +328,8 @@ table {
     $form_fields['cc_attribution_url'] = array(
         'label' => __('Attribution') .' <abbr title="Uniform Resource Locator">URL</abbr>',
         'input' => 'html',
-        'html' => $html
+        'html' => $html,
+        'helps' => __('If you leave this field empty, the default ') . ' &lt;' . get_option('cc_wordpress_default_attribution_url') . '&gt; will be displayed.'
         );
 
     return $form_fields;
@@ -393,7 +415,14 @@ function cc_wordpress_create_figure($attachment_id, $title, $size = '', $is_post
     }
 
     $attribution_name = get_post_meta($id, 'cc_rights_holder', true);
+    if ($attribution_name == '') {
+        $attribution_name = get_option('cc_wordpress_default_rights_holder');
+    }
+
     $attribution_url = get_post_meta($id, 'cc_attribution_url', true);
+    if ($attribution_url == '') {
+        $attribution_url = get_option('cc_wordpress_default_attribution_url');
+    }
 
     // TODO: license version and jurisdiction
     $license = get_post_meta($id, 'cc_license', true);

@@ -13,6 +13,9 @@ Version: 0.5
 Author URI: http://dieweltistgarnichtso.net
 */
 
+// CC REST API URL
+$api_url = 'http://api.creativecommons.org/rest/staging';
+
 // A handy list of licenses and full names.
 $license_list = array(
     'reserved' => 'All rights reserved.',
@@ -377,7 +380,8 @@ function cc_wordpress_attachment_fields_to_save($post, $attachment) {
     cc_wordpress_update_or_add_or_delete($id, 'cc_attribution_url', $attachment['cc_attribution_url']);
 
     // grab license information through CC API
-    $rest = file_get_contents('http://api.creativecommons.org/rest/1.5/license/standard/get');
+    global $api_url;
+    $rest = file_get_contents($api_url .'/license/standard/get');
     $license = get_post_meta($id, 'cc_license', true);
 
     if ($rest) {

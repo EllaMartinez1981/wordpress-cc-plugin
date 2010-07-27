@@ -456,11 +456,14 @@ function cc_wordpress_create_figure($attachment_id, $title, $size = '', $is_post
 
     // TODO: license version and jurisdiction
     $license = get_post_meta($id, 'cc_license', true);
-    $license_url = get_post_meta($id, 'cc_license_url', true);
+    if ($license = 'default') {
+        $license = get_option('cc_wordpress_default_license');
+    }
 
-    if ( $license ) {
+    $license_url = get_post_meta($id, 'cc_license_url', true);
+    if ($license != '') {
         $license_abbr = 'CC' . strtoupper($license);
-        $license_full = 'Creative Commons'. __($license_list($license));
+        $license_full = 'Creative Commons'. $license_list[$license];
     } else {
         // no license, just return standard markup
         return wp_get_attachment_image($id);

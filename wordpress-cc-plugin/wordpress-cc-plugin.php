@@ -93,7 +93,7 @@ function cc_wordpress_admin_css_list() {
 }
 
 // generate license dropdown
-function cc_wordpress_license_select($current_license, $name, $mark_default) {
+function cc_wordpress_license_select($current_license, $name) {
 
     global $license_list;
 
@@ -101,7 +101,7 @@ function cc_wordpress_license_select($current_license, $name, $mark_default) {
 
     foreach ($license_list as $abbr => $license) {
         $selected = ($abbr == $current_license) ? ' selected="selected"' : '';
-        $license_name = cc_wordpress_license_name($abbr, $mark_default);
+        $license_name = cc_wordpress_license_name($abbr);
         $html .= '<option value="'. $abbr .'"'. $selected .'>'. $license_name .'</option>';
     }
 
@@ -111,17 +111,13 @@ function cc_wordpress_license_select($current_license, $name, $mark_default) {
 }
 
 //generate license name
-function cc_wordpress_license_name($license, $mark_default) {
+function cc_wordpress_license_name($license) {
     $default_license = get_option('cc_wordpress_default_license');
 
     if ($license == 'reserved') {
         $license_name = __('All rights reserved.');
     } else {
         $license_name = strtoupper($license);
-
-        if ($license == $default_license and $mark_default == true) {
-            $license_name .= ' ' .__('(Default)');
-        }
     }
 
     return $license_name;

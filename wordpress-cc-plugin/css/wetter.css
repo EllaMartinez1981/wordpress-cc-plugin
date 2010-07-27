@@ -1,4 +1,7 @@
-figure[about],
+figure[about] {
+    display: inline-block;
+}
+
 figure[about] > figcaption {
     display: block;
     margin: 0;

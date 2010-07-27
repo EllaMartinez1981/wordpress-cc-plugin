@@ -93,11 +93,16 @@ function cc_wordpress_admin_css_list() {
 }
 
 // generate license dropdown
-function cc_wordpress_license_select($current_license, $name) {
+function cc_wordpress_license_select($current_license, $name, $show_default) {
 
     global $license_list;
 
     $html  = '<select id="cc_license" name="'. $name .'"">';
+
+    if ($show_default) {
+        $selected = ('default' == $current_license) ? ' selected="selected"' : '';
+        $html .= '<option value="default"'. $selected .'>Default</option>';
+    }
 
     foreach ($license_list as $abbr => $license) {
         $selected = ($abbr == $current_license) ? ' selected="selected"' : '';
@@ -323,7 +328,7 @@ table {
     $default_license = get_option('cc_wordpress_default_license');
     $current_license = get_post_meta($id, 'cc_license', true);
     if ($current_license == '') {
-        $current_license = $default_license;
+        $current_license = 'default';
     }
 
     $name = 'attachments['. $id .'][cc_license]';
@@ -333,7 +338,7 @@ table {
         'label' => '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAQAAABuvaSwAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAABJ0AAASdAXw0a6EAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAABmklEQVQoz5XTPWiTURTG8d8b/GjEii2VKoqKi2DFwU9wUkTdFIeKIEWcpIOTiA4OLgVdXFJwEZHoIII0TiJipZJFrIgGKXQQCRg6RKREjEjMcQnmTVPB3jNc7j1/7nk49zlJ+P+1rPsqydqFD1HvSkUq9MkpaQihoWRcfzqftGUkx9y10Yy33vlttz2GzBmNQtfLrmqqGu6odNKccOvvubXt1/Da+tAZBkwKx1OwHjNqti1EQ7DBN2Vr2vBl4cJiaAjOCdfbcMF3mWC7O6qmDFntms9KzgYZNU/bcFkxBM+UjXjiilFNl4yZsCIoqrRgA0IuGNRws1W66H1KSE5YFzKoa+pFTV0/ydYk66s+kt5kE1ilqd7qs49KIcj75bEfxp0RJn0yKxtMm21rzmtYG6x0Wt5Fy4ODbhuzJejx06M2PCzc+2frbgjn0z9YEE4tih7Q8FyShgdVzRvpQk+omLe5wxvBIV+ECTtkQpCx00Oh4ugCI7XcfF8INa9MqQnhQdrRSedYJYcdsc9eTHvjRbzsyC5lBjNLYP0B5PQk1O2dJT8AAAAASUVORK5CYII=" alt="Creative Commons"> '. __('License'),
         'input' => 'html',
         'html'  => $html,
-        'helps' => __('Choose a Creative Commons License.')
+        'helps' => __('Choose a Creative Commons License.') .' '. __('Default is:') .' '. cc_wordpress_license_name(get_option('cc_wordpress_default_license'))
         );
 
     $html = '<input type="text" id="cc_rights_holder" name="attachments['. $post->ID .'][cc_rights_holder]" value="'. get_post_meta($id, 'cc_rights_holder', true) .'"/>';

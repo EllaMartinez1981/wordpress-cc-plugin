@@ -258,6 +258,9 @@ function cc_wordpress_add_css() {
     if (get_option('cc_wordpress_css')) {
         echo '<link rel="stylesheet" href="'. WP_PLUGIN_URL .'/wordpress-cc-plugin/css/'. get_option('cc_wordpress_css') .'" type="text/css"/>';
     }
+
+    // show IE a little of the HTML5 goodness
+    echo '<!--[if lte IE 8]><script>document.createElement("figure");document.createElement("figcaption");</script><![endif]-->';
 }
 
 // add CSS to all pages

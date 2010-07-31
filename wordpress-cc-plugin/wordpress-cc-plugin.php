@@ -404,11 +404,38 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
     // save licensing information before sending to editor
     cc_wordpress_attachment_fields_to_save($post, $attachment);
 
-    $title = $attachment['post_excerpt'];
+    $title = $attachment['post_title'];
+    $type = substr($post['post_mime_type'], 0, 5);
+    $url = wp_get_attachment_url($id);
 
-    # example output: "[[cc:18|some caption]]"
-    $embed_code = '[[cc:' . $attachment_id .'|' .$title. ']]';
-    return $embed_code;
+    if ($type == 'image') {
+        $size = $attachment['image-size'];
+        $image = wp_get_attachment_image_src($id, $size);
+        $alt = $attachment['image_alt'];
+
+        $html = <<<HTML
+<img class="wp-image-$id size-$size" src="$image[0]" title="$title" alt="$alt"/>
+HTML;
+
+    } elseif ($type == 'audio') {
+        $download = __('Download audio');
+        $html = <<<HTML
+<audio class="wp-audio-$id" src="$url" title="$title" controls="controls"><a href="$url">$download <i>$title</i></a></audio>
+HTML;
+    } elseif ($type == 'video') {
+        $download = __('Download video');
+        $html = <<<HTML
+<video class="wp-video-$id" src="$url" title="$title" controls="controls"><a href="$url">$download <i>$title</i></a></video>
+HTML;
+        //$html = $id . $url . $title . $download;
+    } else {
+        $download = __('Download:');
+        $html = <<<HTML
+<object class="wp-object-$id" src="$url" title="$title"><a href="$url">$download: $title</a></object>';
+HTML;
+    }
+
+    return $html;
 }
 
 function cc_wordpress_create_figure($attachment_id, $title, $size = '', $is_post_thumbnail = false) {

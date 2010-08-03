@@ -493,7 +493,7 @@ function cc_wordpress_create_figure($attachment_id, $title, $size = '', $is_post
 
     $license_url = get_post_meta($id, 'cc_license_url', true);
     if ($license != '') {
-        $license_abbr = 'CC' . strtoupper($license);
+        $license_abbr = 'CC' .' '. strtoupper($license);
         $license_full = 'Creative Commons'. $license_list[$license];
     } else {
         // no license, just return standard markup
@@ -556,7 +556,7 @@ function cc_wordpress_post_thumbnail_filter($html, $post_id, $post_thumbnail_id,
         $html = cc_wordpress_create_figure($post_thumbnail_id, '', $size, true);
     }
 
-    return $html;    
+    return $html;
 }
 
 // apply filter to articles before they are displayed

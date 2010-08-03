@@ -421,20 +421,20 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
 HTML;
 
     } elseif ($type == 'audio') {
-        $download = __('Download audio');
+        $download = __('Audio');
         $html = <<<HTML
-<audio class="wp-audio-$id" src="$url" title="$title" controls="controls"><a href="$url">$download <i>$title</i></a></audio>
+<audio class="wp-audio-$id" src="$url" title="$title" controls="controls">$download: <a href="$url">$title</a></audio>
 HTML;
     } elseif ($type == 'video') {
-        $download = __('Download video');
+        $download = __('Video');
         $html = <<<HTML
-<video class="wp-video-$id" src="$url" title="$title" controls="controls"><a href="$url">$download <i>$title</i></a></video>
+<video class="wp-video-$id" src="$url" title="$title" controls="controls">$download: <a href="$url">$title</a></video>
 HTML;
         //$html = $id . $url . $title . $download;
     } else {
         $download = __('Download:');
         $html = <<<HTML
-<object class="wp-object-$id" src="$url" title="$title"><a href="$url">$download: $title</a></object>';
+<object class="wp-object-$id" src="$url" title="$title">$download: <a href="$url">$title</a></object>';
 HTML;
     }
 
@@ -515,15 +515,40 @@ function cc_wordpress_create_figure($attachment_id, $title, $size = '', $is_post
 }
 
 function cc_wordpress_article_filter($article) {
-    # example match: "[[cc:18|some caption]]"
-    preg_match_all('/\[\[cc:([0-9].*?)\|(.*?)\]\]/', $article, $matches, PREG_SET_ORDER);
+    require_once 'lib/html5lib/Parser.php';
 
-    foreach ($matches as $match) {
-        $figure = cc_wordpress_create_figure($match[1], $match[2]);
-        $article = str_replace($match[0], $figure, $article);
-    }
+    // sorry, but parseFragment() returns a DomNodeList, which is as inflexible as it gets
+    $dom = HTML5_Parser::parse($article);
 
-    return $article;
+    $tagnames = array('img', 'audio', 'video', 'object');
+    foreach($tagnames as $tagname) {
+        foreach($dom->getElementsByTagName($tagname) as $element) {
+            $class = $element->getAttribute('class');
+
+            // relevant class name example: wp-image-18
+            preg_match('/wp-(image|audio|video|object)-([0-9]*)/', $class, $matches);
+            $id = $matches[2];
+
+            // relevant class name example: size-medium
+            preg_match('/size-(.*)/', $class, $matches);
+            $size = $matches[1];
+
+            // TODO: make cc_wordpress_create_figure() take and return a DOM fragment
+            $figure_html = cc_wordpress_create_figure($id, '', $size, false);
+            $figure = HTML5_Parser::parseFragment($figure_html)->item(0);
+
+            // a document context change is needed before appending the node
+            $figure = $dom->importNode($figure, True);
+            $element->parentNode->replaceChild($figure, $element);
+        }
+    }    
+
+    // hackish but reliable way to serialize the DOM
+    // TODO: fix this mess
+    $XML = $dom->saveXML($dom->getElementsByTagName('body')->item(0));
+    $XML = str_replace('<body>', '', $XML);
+    $XML = str_replace('</body>', '', $XML);
+    return $XML;
 }
 
 function cc_wordpress_post_thumbnail_filter($html, $post_id, $post_thumbnail_id, $size, $attr) {

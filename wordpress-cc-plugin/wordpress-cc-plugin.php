@@ -14,7 +14,7 @@ Author URI: http://dieweltistgarnichtso.net
 */
 
 // CC REST API URL
-$api_url = 'http://api.creativecommons.org/rest/staging';
+$api_url = 'http://api.creativecommons.org/rest/dev';
 
 // A handy list of licenses and full names.
 $license_list = array(

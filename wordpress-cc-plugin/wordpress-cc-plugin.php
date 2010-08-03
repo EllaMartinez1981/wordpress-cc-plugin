@@ -71,6 +71,7 @@ function cc_wordpress_admin_css_list() {
     $html = '';
 
     if($directory){
+        // TODO: use scandir()
         while (false !== ($file = readdir($directory))) {
             if(substr($file, -3) == 'css') {
                 $html .= '

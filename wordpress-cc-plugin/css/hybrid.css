@@ -1,0 +1,42 @@
+figure[about] {
+    display: inline-block;
+}
+
+figure[about] > figcaption {
+    background-color: #111111;
+    color: #ededed;
+    display: block;
+    font-style: normal;
+    padding: 0.5em 1em 0.5em 0.5em;
+    text-align: right;
+    margin: 0;
+}
+
+    figure[about] > figcaption a {
+        color: #ededed !important;
+    }
+
+    figure[about] > figcaption span:after {
+        content: " // ";
+    }
+
+    figure[about] > figcaption span[href*="Image"]:after {
+        content: " // Image: ";
+    }
+
+    figure[about] > figcaption span[href*="MovingImage"]:after {
+        content: " // Video: ";
+    }
+
+    figure[about] > figcaption span[href*="Sound"]:after {
+        content: " // Audio: ";
+    }
+
+figure[about] > img,
+figure[about] > audio,
+figure[about] > video,
+figure[about] > object {
+    border: none;
+    display: block;
+    margin: auto auto 0;
+}

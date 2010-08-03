@@ -72,7 +72,7 @@ function cc_wordpress_admin_css_list() {
 
     if($directory){
         while (false !== ($file = readdir($directory))) {
-            if($file !== '.' && $file !== '..'){
+            if(substr($file, -3) == 'css') {
                 $html .= '
 <li>
     <label><input type="radio" name="cc_wordpress_css" value="'. $file .'"';

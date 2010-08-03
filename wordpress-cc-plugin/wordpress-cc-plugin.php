@@ -462,7 +462,7 @@ function cc_wordpress_create_figure($attachment_id, $title, $size = '', $is_post
         if ($size == '') {
             $media_html  = '<img src="'. $url .'" alt="'. $alt .'"/>';
         } else {
-            $image = wp_get_attachment_image_src($id);
+            $image = wp_get_attachment_image_src($id, $size);
             $media_html  = '<img src="'. $image[0] .'" alt="'. $alt .'"/>';
         }
     } elseif ($type == 'audio') {

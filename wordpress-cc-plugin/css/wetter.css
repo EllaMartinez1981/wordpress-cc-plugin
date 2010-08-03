@@ -9,7 +9,8 @@ figure[about] > figcaption {
 
 figure[about] > img,
 figure[about] > audio,
-figure[about] > video {
+figure[about] > video,
+figure[about] > object {
     border: 1px solid #888A85;
     display: block;
     margin: auto auto 0.5em;

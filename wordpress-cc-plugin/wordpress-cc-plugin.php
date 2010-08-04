@@ -16,17 +16,6 @@ Author URI: http://dieweltistgarnichtso.net
 // CC REST API URL
 $api_url = 'http://api.creativecommons.org/rest/dev';
 
-// A handy list of licenses and full names.
-$license_list = array(
-    'reserved' => 'All rights reserved.',
-    'by' => 'Attribution',
-    'by-nc' => 'Attribution Non-Commerical',
-    'by-nc-nd' => 'Attribution Non-Commercial No Derivatives',
-    'by-nc-sa' => 'Attribution Non-Commercial Share Alike',
-    'by-nd' => 'Attribution No Derivatives',
-    'by-sa' => 'Attribution Share Alike'
-);
-
 /* install and uninstall */
 
 // create database entry on install
@@ -98,10 +87,7 @@ function cc_wordpress_admin_css_list() {
 }
 
 // generate license dropdown
-function cc_wordpress_license_select($current_license, $name, $show_default) {
-
-    global $license_list;
-
+function cc_wordpress_license_select($current_license, $name, $current_jurisdiction, $show_default) {
     $html  = '<select id="cc_license" name="'. $name .'"">';
 
     if ($show_default) {
@@ -109,10 +95,12 @@ function cc_wordpress_license_select($current_license, $name, $show_default) {
         $html .= '<option value="default"'. $selected .'>Default</option>';
     }
 
-    foreach ($license_list as $abbr => $license) {
-        $selected = ($abbr == $current_license) ? ' selected="selected"' : '';
-        $license_name = cc_wordpress_license_name($abbr);
-        $html .= '<option value="'. $abbr .'"'. $selected .'>'. $license_name .'</option>';
+    // TODO: Get this list via CC REST API
+    $license_ids = array('by','by-nc','by-nd','by-sa','by-nc-nd','by-nc-sa');
+    foreach ($license_ids as $license_id) {
+        $selected = ($license_id == $current_license) ? ' selected="selected"' : '';
+        $license_name = cc_wordpress_license_name($license_id, $current_jurisdiction);
+        $html .= '<option value="'. $license_id .'"'. $selected .'>'. $license_name .'</option>';
     }
 
     $html .= '</select>';
@@ -120,17 +108,26 @@ function cc_wordpress_license_select($current_license, $name, $show_default) {
     return $html;
 }
 
-//generate license name
-function cc_wordpress_license_name($license) {
-    $default_license = get_option('cc_wordpress_default_license');
+function cc_wordpress_license_name($license_id, $jurisdiction_id) {
+    // grab license information
+    // FIXME: should come from cache
+    global $api_url;
+    $locale = get_option('cc_wordpress_locale');
+    $rest = file_get_contents($api_url .'/license/standard/jurisdiction/'. $jurisdiction_id .'?locale='. $locale);
 
-    if ($license == 'reserved') {
-        $license_name = __('All rights reserved.');
-    } else {
-        $license_name = strtoupper($license);
+    $dom = new DOMDocument();
+    $dom->loadXML($rest);
+
+    $licenses = $dom->getElementsByTagName('license');
+
+    foreach ($licenses as $license) {
+        $license_url = $license->getAttribute('url');
+        if (strpos($license_url, '/'. $license_id .'/') !== false) {
+            return $license->getAttribute('name');;
+        }
     }
 
-    return $license_name;
+    return 'All rights reserved.';
 }
 
 function cc_wordpress_license_url($license_id, $jurisdiction_id) {
@@ -287,7 +284,8 @@ label select {
 
                 <?php
                 $current_license = get_option('cc_wordpress_default_license');
-                echo cc_wordpress_license_select($current_license, 'cc_wordpress_default_license', false);
+                $default_jurisdiction = get_option('cc_wordpress_default_jurisdiction');
+                echo cc_wordpress_license_select($current_license, 'cc_wordpress_default_license', $default_jurisdiction, false);
                 ?>
             </label>
         </p>
@@ -475,14 +473,16 @@ table {
         $current_license = 'default';
     }
 
+    $current_jurisdiction = get_post_meta($id, 'cc_jurisdiction', true);
+
     $name = 'attachments['. $id .'][cc_license]';
-    $html = cc_wordpress_license_select($current_license, $name, true);
+    $html = cc_wordpress_license_select($current_license, $name, $current_jurisdiction, true);
     
     $form_fields['cc_license'] = array(
         'label' => '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAQAAABuvaSwAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAABJ0AAASdAXw0a6EAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAABmklEQVQoz5XTPWiTURTG8d8b/GjEii2VKoqKi2DFwU9wUkTdFIeKIEWcpIOTiA4OLgVdXFJwEZHoIII0TiJipZJFrIgGKXQQCRg6RKREjEjMcQnmTVPB3jNc7j1/7nk49zlJ+P+1rPsqydqFD1HvSkUq9MkpaQihoWRcfzqftGUkx9y10Yy33vlttz2GzBmNQtfLrmqqGu6odNKccOvvubXt1/Da+tAZBkwKx1OwHjNqti1EQ7DBN2Vr2vBl4cJiaAjOCdfbcMF3mWC7O6qmDFntms9KzgYZNU/bcFkxBM+UjXjiilFNl4yZsCIoqrRgA0IuGNRws1W66H1KSE5YFzKoa+pFTV0/ydYk66s+kt5kE1ilqd7qs49KIcj75bEfxp0RJn0yKxtMm21rzmtYG6x0Wt5Fy4ODbhuzJejx06M2PCzc+2frbgjn0z9YEE4tih7Q8FyShgdVzRvpQk+omLe5wxvBIV+ECTtkQpCx00Oh4ugCI7XcfF8INa9MqQnhQdrRSedYJYcdsc9eTHvjRbzsyC5lBjNLYP0B5PQk1O2dJT8AAAAASUVORK5CYII=" alt="Creative Commons"> '. __('License'),
         'input' => 'html',
         'html'  => $html,
-        'helps' => __('Choose a Creative Commons License.') .' '. __('Default is') .' '. cc_wordpress_license_name($default_license) .'.'
+        'helps' => __('Choose a Creative Commons License.') .' '. __('Default is') .' '. cc_wordpress_license_name($default_license, $current_jurisdiction) .'.'
         );
 
     $html = '<input type="text" id="cc_rights_holder" name="attachments['. $post->ID .'][cc_rights_holder]" value="'. get_post_meta($id, 'cc_rights_holder', true) .'"/>';
@@ -643,7 +643,7 @@ function cc_wordpress_figure($attachment_id, $title, $size = '', $is_post_thumbn
 
     if ($license != '') {
         $license_abbr = 'CC' .' '. strtoupper($license);
-        $license_full = 'Creative Commons'. $license_list[$license];
+        $license_full = cc_wordpress_license_name($license, $jurisdiction);
     } else {
         // no license, just return standard markup
         return wp_get_attachment_image($id);

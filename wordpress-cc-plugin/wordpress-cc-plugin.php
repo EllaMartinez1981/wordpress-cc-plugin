@@ -133,16 +133,52 @@ function cc_wordpress_license_name($license) {
     return $license_name;
 }
 
+// generate jurisdiction select
+function cc_wordpress_jurisdiction_select($current_jurisdiction, $name, $show_default) {
+    // grab list of supported jurisdiction
+    // FIXME: should come from cache
+    global $api_url;
+    $locale = get_option('cc_wordpress_locale');
+    $rest = file_get_contents($api_url .'/support/jurisdictions?locale='. $locale);
+
+    $dom = new DOMDocument();
+    // ugly hack because a root element is needed
+    $dom->loadXML('<select>'. $rest .'</select>');
+
+    // TODO: sort jurisdictions alphabetically
+    $jurisdictions = $dom->getElementsByTagName('option');
+
+    $html  = '<select id="cc_jurisdiction" name="'. $name .'"">';
+
+    if ($show_default) {
+        $selected = ('default' == $current_jurisdiction) ? ' selected="selected"' : '';
+        $html .= '<option value="default"'. $selected .'>Default</option>';
+    }
+
+    foreach ($jurisdictions as $jurisdiction) {
+        $jurisdiction_url = $jurisdiction->getAttribute('value');
+        $jurisdiction_id = str_replace('http://creativecommons.org/international/', '', substr($jurisdiction_url, 0, -1));
+        $jurisdiction_name = $jurisdiction->textContent;
+        $selected = ($jurisdiction_id == $current_jurisdiction) ? ' selected="selected"' : '';
+        $html .= '<option value="'. $jurisdiction_id .'"'. $selected .'>'. $jurisdiction_name .'</option>';
+    }
+
+    $html .= '</select>';
+
+    return $html;
+}
+
 //generate locale select
 function cc_wordpress_locale_select($current_locale, $name) {
     // grab list of supported locales
     // FIXME: should come from cache
     global $api_url;
-    $rest = file_get_contents( $api_url . '/locales');
+    $rest = file_get_contents($api_url . '/locales');
 
     $dom = new DOMDocument();
     $dom->loadXML($rest);
 
+    // TODO: sort locales alphabetically
     $locales = $dom->getElementsByTagName('locale');
 
     $html  = '<select id="cc_locale" name="'. $name .'"">';

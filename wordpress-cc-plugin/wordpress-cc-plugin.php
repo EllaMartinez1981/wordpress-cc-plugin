@@ -168,6 +168,31 @@ function cc_wordpress_jurisdiction_select($current_jurisdiction, $name, $show_de
     return $html;
 }
 
+function cc_wordpress_jurisdiction_name($jurisdiction_id) {
+    // grab list of supported jurisdiction
+    // FIXME: should come from cache
+    global $api_url;
+    $locale = get_option('cc_wordpress_locale');
+    $rest = file_get_contents($api_url .'/support/jurisdictions?locale='. $locale);
+
+    $dom = new DOMDocument();
+    // ugly hack because a root element is needed
+    $dom->loadXML('<select>'. $rest .'</select>');
+
+    // TODO: sort jurisdictions alphabetically
+    $jurisdictions = $dom->getElementsByTagName('option');
+
+    foreach ($jurisdictions as $jurisdiction) {
+        $jurisdiction_url = $jurisdiction->getAttribute('value');
+        if ('http://creativecommons.org/international/' .$jurisdiction_id. '/' == $jurisdiction_url) {
+            return $jurisdiction->textContent;
+        }
+    }
+
+    // if all else fails
+    return $jurisdiction_id;
+}
+
 //generate locale select
 function cc_wordpress_locale_select($current_locale, $name) {
     // grab list of supported locales
@@ -386,7 +411,9 @@ table {
 }
 
 .cc_license > th,
-.cc_license > td {
+.cc_license > td,
+.cc_jurisdiction > th,
+.cc_jurisdiction > td {
     border-top: 1px solid #c0c0c0;
     border-style: solid;
     padding-top: 7px !important;
@@ -397,7 +424,9 @@ table {
 }
 
 #cc_license,
-#cc_license + p {
+#cc_license + p,
+#cc_jurisdiction,
+#cc_jurisdiction + p {
     display: inline-block;
 }
 
@@ -451,7 +480,23 @@ table {
         'label' => __('Attribution') .' <abbr title="Uniform Resource Locator">URL</abbr>',
         'input' => 'html',
         'html' => $html,
-        'helps' => __('If you leave this field empty, the default ') . ' &lt;' . get_option('cc_wordpress_default_attribution_url') . '&gt; will be displayed.'
+        'helps' => __('If you leave this field empty, the default ') . ' &lt;' . get_option('cc_wordpress_default_attribution_url') .'&gt; '. __('will be displayed.')
+        );
+
+    $default_jurisdiction = get_option('cc_wordpress_default_jurisdiction');
+    $current_jurisdiction = get_post_meta($id, 'cc_jurisdiction', true);
+    if ($current_jurisdiction == '') {
+        $current_jurisdiction = 'default';
+    }
+
+    $name = 'attachments['. $id .'][cc_jurisdiction]';
+    $html = cc_wordpress_jurisdiction_select($current_jurisdiction, $name, true);
+
+    $form_fields['cc_jurisdiction'] = array(
+        'label' => __('Jurisdiction'),
+        'input' => 'html',
+        'html' => $html,
+        'helps' => __('Choose a jurisdiction.') .' '. __('Default is') .' '. cc_wordpress_jurisdiction_name($default_jurisdiction) .'.'
         );
 
     return $form_fields;
@@ -474,6 +519,7 @@ function cc_wordpress_fields_to_save($post, $attachment) {
     cc_wordpress_update_or_add_or_delete($id, 'cc_license', $attachment['cc_license']);
     cc_wordpress_update_or_add_or_delete($id, 'cc_rights_holder', $attachment['cc_rights_holder']);
     cc_wordpress_update_or_add_or_delete($id, 'cc_attribution_url', $attachment['cc_attribution_url']);
+    cc_wordpress_update_or_add_or_delete($id, 'cc_jurisdiction', $attachment['cc_jurisdiction']);
 
     // grab license information through CC API
     global $api_url;

@@ -376,7 +376,7 @@ function cc_wordpress_update_or_add_or_delete($id, $key, $value) {
     }
 }
 
-function cc_wordpress_attachment_fields_to_save($post, $attachment) {
+function cc_wordpress_fields_to_save($post, $attachment) {
 
     $id = $post['ID'];
 
@@ -406,7 +406,7 @@ function cc_wordpress_media_send_to_editor($html, $attachment_id, $attachment) {
     $id = $post['ID'];
 
     // save licensing information before sending to editor
-    cc_wordpress_attachment_fields_to_save($post, $attachment);
+    cc_wordpress_fields_to_save($post, $attachment);
 
     $title = $attachment['post_title'];
     $type = substr($post['post_mime_type'], 0, 5);
@@ -442,7 +442,7 @@ HTML;
     return $html;
 }
 
-function cc_wordpress_create_figure($attachment_id, $title, $size = '', $is_post_thumbnail = false) {
+function cc_wordpress_figure($attachment_id, $title, $size = '', $is_post_thumbnail = false) {
 
     global $license_list;
 
@@ -534,8 +534,8 @@ function cc_wordpress_article_filter($article) {
             preg_match('/size-(.*)/', $class, $matches);
             $size = $matches[1];
 
-            // TODO: make cc_wordpress_create_figure() take and return a DOM fragment
-            $figure_html = cc_wordpress_create_figure($id, '', $size, false);
+            // TODO: make cc_wordpress_figure() take and return a DOM fragment
+            $figure_html = cc_wordpress_figure($id, '', $size, false);
             $figure = HTML5_Parser::parseFragment($figure_html)->item(0);
 
             // a document context change is needed before appending the node
@@ -554,7 +554,7 @@ function cc_wordpress_article_filter($article) {
 
 function cc_wordpress_post_thumbnail_filter($html, $post_id, $post_thumbnail_id, $size, $attr) {
     if (get_option('cc_wordpress_post_thumbnail_filter') == 'on') {
-        $html = cc_wordpress_create_figure($post_thumbnail_id, '', $size, true);
+        $html = cc_wordpress_figure($post_thumbnail_id, '', $size, true);
     }
 
     return $html;
@@ -571,7 +571,7 @@ add_filter('attachment_fields_to_edit', 'cc_wordpress_fields_to_edit', 11, 2);
 
 // save attachment fields
 // TODO: this is not working at the moment
-add_filter('attachment_fields_to_save', 'cc_wordpress_attachment_fields_to_save', 11, 2);
+add_filter('attachment_fields_to_save', 'cc_wordpress_fields_to_save', 11, 2);
 
 // send to wordpress editor
 add_filter('media_send_to_editor', 'cc_wordpress_media_send_to_editor', 11, 3);

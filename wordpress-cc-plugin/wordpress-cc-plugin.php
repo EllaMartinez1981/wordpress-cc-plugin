@@ -133,9 +133,29 @@ function cc_wordpress_license_name($license) {
     return $license_name;
 }
 
+function cc_wordpress_license_url($license_id, $jurisdiction_id) {
+    // grab license information
+    // FIXME: should come from cache
+    global $api_url;
+    $locale = get_option('cc_wordpress_locale');
+    $rest = file_get_contents($api_url .'/license/standard/jurisdiction/'. $jurisdiction_id .'?locale='. $locale);
+
+    $dom = new DOMDocument();
+    $dom->loadXML($rest);
+
+    $licenses = $dom->getElementsByTagName('license');
+
+    foreach ($licenses as $license) {
+        $license_url = $license->getAttribute('url');
+        if (strpos($license_url, '/'. $license_id .'/') !== false) {
+            return $license_url;
+        }
+    }
+}
+
 // generate jurisdiction select
 function cc_wordpress_jurisdiction_select($current_jurisdiction, $name, $show_default) {
-    // grab list of supported jurisdiction
+    // grab list of supported jurisdictions
     // FIXME: should come from cache
     global $api_url;
     $locale = get_option('cc_wordpress_locale');
@@ -151,8 +171,8 @@ function cc_wordpress_jurisdiction_select($current_jurisdiction, $name, $show_de
     $html  = '<select id="cc_jurisdiction" name="'. $name .'"">';
 
     if ($show_default) {
-        $selected = ('default' == $current_jurisdiction) ? ' selected="selected"' : '';
-        $html .= '<option value="default"'. $selected .'>Default</option>';
+        $selected = ('' == $current_jurisdiction) ? ' selected="selected"' : '';
+        $html .= '<option value=""'. $selected .'>Default</option>';
     }
 
     foreach ($jurisdictions as $jurisdiction) {
@@ -521,20 +541,6 @@ function cc_wordpress_fields_to_save($post, $attachment) {
     cc_wordpress_update_or_add_or_delete($id, 'cc_attribution_url', $attachment['cc_attribution_url']);
     cc_wordpress_update_or_add_or_delete($id, 'cc_jurisdiction', $attachment['cc_jurisdiction']);
 
-    // grab license information through CC API
-    global $api_url;
-    $rest = file_get_contents($api_url .'/license/standard/get');
-    $license = get_post_meta($id, 'cc_license', true);
-
-    if ($rest) {
-        preg_match('/<license-uri>(.*?)<\/license-uri>/', $rest, $matches);
-        $license_url = str_replace('/by/', '/'. $license .'/' , $matches[1]);
-    } else {
-        $license_url = 'http://creativecommons.org/licenses/'. $license .'/3.0/';
-    }
-
-    cc_wordpress_update_or_add_or_delete($id, 'cc_license_url', $license_url);
-
     return $post;
 }
 
@@ -623,13 +629,18 @@ function cc_wordpress_figure($attachment_id, $title, $size = '', $is_post_thumbn
         $attribution_url = get_option('cc_wordpress_default_attribution_url');
     }
 
-    // TODO: license version and jurisdiction
     $license = get_post_meta($id, 'cc_license', true);
-    if ($license = 'default') {
+    if ($license == 'default') {
         $license = get_option('cc_wordpress_default_license');
     }
 
-    $license_url = get_post_meta($id, 'cc_license_url', true);
+    $jurisdiction = get_post_meta($id, 'cc_jurisdiction', true);
+    if ($jurisdiction == '') {
+        $jurisdiction = get_option('cc_wordpress_default_jurisdiction');
+    }
+
+    $license_url = cc_wordpress_license_url($license, $jurisdiction);
+
     if ($license != '') {
         $license_abbr = 'CC' .' '. strtoupper($license);
         $license_full = 'Creative Commons'. $license_list[$license];

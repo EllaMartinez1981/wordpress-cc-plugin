@@ -36,6 +36,7 @@ function cc_wordpress_register_settings() {
     register_setting('cc_wordpress_options', 'cc_wordpress_default_rights_holder');
     register_setting('cc_wordpress_options', 'cc_wordpress_default_attribution_url');
     register_setting('cc_wordpress_options', 'cc_wordpress_post_thumbnail_filter');
+    register_setting('cc_wordpress_options', 'cc_wordpress_locale');
 }
 
 // delete database entry on uninstall
@@ -45,6 +46,7 @@ function cc_wordpress_uninstall(){
     unregister_setting('cc_wordpress_options', 'cc_wordpress_default_rights_holder');
     unregister_setting('cc_wordpress_options', 'cc_wordpress_default_attribution_url');
     unregister_setting('cc_wordpress_options', 'cc_wordpress_post_thumbnail_filter');
+    unregister_setting('cc_wordpress_options', 'cc_wordpress_locale');
 }
 
 // install hook
@@ -129,6 +131,31 @@ function cc_wordpress_license_name($license) {
     return $license_name;
 }
 
+//generate locale select
+function cc_wordpress_locale_select($current_locale, $name) {
+    // grab list of supported locales
+    // FIXME: should come from cache
+    global $api_url;
+    $rest = file_get_contents( $api_url . '/locales');
+
+    $dom = new DOMDocument();
+    $dom->loadXML($rest);
+
+    $locales = $dom->getElementsByTagName('locale');
+
+    $html  = '<select id="cc_locale" name="'. $name .'"">';
+
+    foreach ($locales as $locale) {
+        $locale_id = $locale->getAttribute('id');
+        $selected = ($locale_id == $current_locale) ? ' selected="selected"' : '';
+        $html .= '<option value="'. $locale_id .'"'. $selected .'>'. $locale_id .'</option>';
+    }
+
+    $html .= '</select>';
+
+    return $html;
+}
+
 // admin page
 function cc_wordpress_admin_page() {
     ?>
@@ -196,6 +223,17 @@ label select {
 
                 <input type="url" name="cc_wordpress_default_attribution_url" value="<?php echo get_option('cc_wordpress_default_attribution_url'); ?>"/>
             </label>
+        </p>
+
+        <h2>Locale</h2>
+        <p>
+            Select the locale for this plugin:
+        </p>
+        <p>
+                <?php
+                $current_locale = get_option('cc_wordpress_locale');
+                echo cc_wordpress_locale_select($current_locale, 'cc_wordpress_locale');
+                ?>
         </p>
 
         <h2>Post Thumbnail Filter</h2>

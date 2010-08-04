@@ -35,6 +35,7 @@ function cc_wordpress_register_settings() {
     register_setting('cc_wordpress_options', 'cc_wordpress_default_license');
     register_setting('cc_wordpress_options', 'cc_wordpress_default_rights_holder');
     register_setting('cc_wordpress_options', 'cc_wordpress_default_attribution_url');
+    register_setting('cc_wordpress_options', 'cc_wordpress_default_jurisdiction');
     register_setting('cc_wordpress_options', 'cc_wordpress_post_thumbnail_filter');
     register_setting('cc_wordpress_options', 'cc_wordpress_locale');
 }
@@ -45,6 +46,7 @@ function cc_wordpress_uninstall(){
     unregister_setting('cc_wordpress_options', 'cc_wordpress_default_license');
     unregister_setting('cc_wordpress_options', 'cc_wordpress_default_rights_holder');
     unregister_setting('cc_wordpress_options', 'cc_wordpress_default_attribution_url');
+    unregister_setting('cc_wordpress_options', 'cc_wordpress_default_jurisdiction');
     unregister_setting('cc_wordpress_options', 'cc_wordpress_post_thumbnail_filter');
     unregister_setting('cc_wordpress_options', 'cc_wordpress_locale');
 }
@@ -195,7 +197,7 @@ label select {
 
         <h2>License Defaults</h2>
         <p>
-            Setting default license, rights holder, and attribution URL pre-fills the license chooser form field with the chosen option.
+            Setting default license, rights holder, attribution URL and jurisdiction pre-fills the license chooser form field with the chosen option.
         </p>
 
         <p>
@@ -225,15 +227,30 @@ label select {
             </label>
         </p>
 
+       <p>
+            <label>
+                Jurisdiction
+
+                <?php
+                $current_jurisdiction = get_option('cc_wordpress_default_jurisdiction');
+                echo cc_wordpress_jurisdiction_select($current_jurisdiction, 'cc_wordpress_default_jurisdiction', false);
+                ?>
+            </label>
+        </p>
+
         <h2>Locale</h2>
         <p>
             Select the locale for this plugin:
         </p>
         <p>
+            <label>
+                Locale
+
                 <?php
                 $current_locale = get_option('cc_wordpress_locale');
                 echo cc_wordpress_locale_select($current_locale, 'cc_wordpress_locale');
                 ?>
+            </label>
         </p>
 
         <h2>Post Thumbnail Filter</h2>

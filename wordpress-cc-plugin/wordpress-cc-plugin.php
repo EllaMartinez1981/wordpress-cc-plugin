@@ -656,7 +656,24 @@ function cc_wordpress_figure($attachment_id, $title, $size = '', $is_post_thumbn
     }
 
     // produce caption
-    $caption_html = '<span href="'. $dmci_type_url .'" property="dc:title" rel="dc:type">'. $title .'</span> <a href="'. $attribution_url .'" property="cc:attributionName" rel="cc:attributionURL">'. $attribution_name .'</a> <small> <a href="'. $license_url .'" rel="license"> <abbr title="'. $license_full .'">'. $license_abbr .'</abbr> </a> </small>';
+    $caption_html = '<span href="'. $dmci_type_url .'" property="dc:title" rel="dc:type">'. $title .'</span><a href="'. $attribution_url .'" property="cc:attributionName" rel="cc:attributionURL">'. $attribution_name .'</a><small><a href="'. $license_url .'" rel="license"><abbr title="'. $license_full .'">'. $license_abbr .'</abbr></a></small>';
+
+    // add re-embed html and script
+    $embed_script = <<<SCRIPT
+<script> function showEmbed(element) {
+var figureNode = element.parentNode.parentNode;
+var helperNode = document.createElement('html');
+helperNode.appendChild(figureNode.cloneNode(true));
+
+embedNode = document.createElement('input');
+embedNode.value = helperNode.innerHTML;
+embedNode.readOnly = true;
+
+element.parentNode.replaceChild(embedNode,element);
+embedNode.select();
+} </script>
+SCRIPT;
+    $embed_html = '<button onclick="showEmbed(this)">embed</button>';
 
     // add specific thumbnail class
     if ($is_post_thumbnail == true) {
@@ -664,7 +681,7 @@ function cc_wordpress_figure($attachment_id, $title, $size = '', $is_post_thumbn
     }
 
     // add figure element
-    $html = '<figure '. $post_thumbnail_class .'about="'. $url .'" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/terms/"> '. $media_html .' <figcaption> '. $caption_html .'</figcaption> </figure>';
+    $html = '<figure '. $post_thumbnail_class .'about="'. $url .'" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/terms/">'. $media_html .' <figcaption>'. $caption_html . $embed_script . $embed_html .'</figcaption></figure>';
 
     return $html;
 }

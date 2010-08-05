@@ -675,13 +675,19 @@ embedNode.select();
 SCRIPT;
     $embed_html = '<button onclick="showEmbed(this)">embed</button>';
 
+    // add inline style — inefficient, but needed for re-embedding
+    $css = file_get_contents(WP_PLUGIN_URL .'/wordpress-cc-plugin/css/'. get_option('cc_wordpress_css'));
+    if ($css !== False) {
+        $style = '<style scoped="scoped">'. $css .'</style>';
+    }
+
     // add specific thumbnail class
     if ($is_post_thumbnail == true) {
         $post_thumbnail_class = 'class="post-thumbnail" ';
     }
 
     // add figure element
-    $html = '<figure '. $post_thumbnail_class .'about="'. $url .'" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/terms/">'. $media_html .' <figcaption>'. $caption_html . $embed_script . $embed_html .'</figcaption></figure>';
+    $html = '<figure '. $post_thumbnail_class .'about="'. $url .'" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/terms/">'. $media_html .' <figcaption>'. $caption_html . $embed_script . $embed_html .'</figcaption>'. $style .'</figure>';
 
     return $html;
 }

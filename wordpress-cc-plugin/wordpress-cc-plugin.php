@@ -594,6 +594,12 @@ function cc_wordpress_figure($attachment_id, $title, $size = '', $is_post_thumbn
 
     if ($title == '') {
         $title = $post->post_excerpt;
+        if ($title == '') {
+            $title = $post->post_title;
+            if ($title == '') {
+                $title = 'untitled';
+            }
+        }
     }
 
     $type = substr($post->post_mime_type, 0, 5);

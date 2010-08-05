@@ -656,7 +656,7 @@ function cc_wordpress_figure($attachment_id, $title, $size = '', $is_post_thumbn
     }
 
     // produce caption
-    $caption_html = '<span href="'. $dmci_type_url .'" property="dc:title" rel="dc:type">'. $title .'</span><a href="'. $attribution_url .'" property="cc:attributionName" rel="cc:attributionURL">'. $attribution_name .'</a><small><a href="'. $license_url .'" rel="license"><abbr title="'. $license_full .'">'. $license_abbr .'</abbr></a></small>';
+    $caption_html = '<span href="'. $dmci_type_url .'" property="dc:title" rel="dc:type">'. $title .'</span> <a href="'. $attribution_url .'" property="cc:attributionName" rel="cc:attributionURL">'. $attribution_name .'</a> <small> <a href="'. $license_url .'" rel="license"> <abbr title="'. $license_full .'">'. $license_abbr .'</abbr> </a> </small>';
 
     // add re-embed html and script
     $embed_script = <<<SCRIPT

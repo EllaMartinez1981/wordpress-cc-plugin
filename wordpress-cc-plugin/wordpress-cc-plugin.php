@@ -731,7 +731,7 @@ function cc_wordpress_article_filter($article) {
     $XML = str_replace('</body>', '', $XML);
 
     // work around a bug regarding <style> elements including CSS '>' selectors
-    $XML = str_replace ('&gt;', '>', $XML);
+    $XML = str_replace('&gt;', '>', $XML);
     return $XML;
 }
 

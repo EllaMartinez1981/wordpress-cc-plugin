@@ -45,7 +45,7 @@ figure[about] > figcaption {
 
     figure[about] > figcaption [property*=attributionName] {
         color: inherit;
-        display: block;
+        display: inline-block;
         font-variant: small-caps;
         margin-right: 6em;
     }

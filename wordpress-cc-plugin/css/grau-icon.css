@@ -21,6 +21,10 @@ figure[about] > video {
     border: 1px solid #888A85;
 }
 
+    figure[about] > figcaption * {
+        vertical-align: middle;
+    }
+
     figure[about] > figcaption small * {
         background-position: left center;
         background-repeat: no-repeat;
@@ -31,7 +35,6 @@ figure[about] > video {
         width: 80px;
         overflow: hidden;
         text-shadow: none !important;
-        vertical-align: text-bottom;
     }
 
     figure[about] > figcaption small a[href*="by"] {
@@ -60,6 +63,9 @@ figure[about] > video {
 
     figure[about] > figcaption button,
     figure[about] > figcaption input {
+        color: inherit;
+        background: inherit;
+        border-width: 1px;
         font-size: inherit;
         width: 5em;
     }

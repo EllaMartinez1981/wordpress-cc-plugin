@@ -32,6 +32,7 @@ object + figcaption {
 }
 
 figure[about] figcaption:hover {
+    height: inherit;
     width: inherit;
 }
 
@@ -49,7 +50,7 @@ figure[about] figcaption:hover {
         padding: 0 0.5em;
         text-decoration: underline;
         text-shadow: none;
-        vertical-align: middle;
+        vertical-align: baseline;
     }
 
     figure[about] figcaption small {
@@ -84,5 +85,5 @@ figure[about] figcaption:hover {
         border-width: 1px;
         font-size: inherit;
         width: 5em;
-        vertical-align: middle;
+        vertical-align: text-bottom;
     }

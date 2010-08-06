@@ -25,6 +25,12 @@ figure[about] figcaption {
     width: 22px;
 }
 
+audio +  figcaption,
+video + figcaption,
+object + figcaption {
+    left: 22px !important;
+}
+
 figure[about] figcaption:hover {
     width: inherit;
 }

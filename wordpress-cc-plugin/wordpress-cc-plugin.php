@@ -679,6 +679,8 @@ SCRIPT;
     // add inline style — inefficient, but needed for re-embedding
     $css = file_get_contents(WP_PLUGIN_URL .'/wordpress-cc-plugin/css/'. get_option('cc_wordpress_css'));
     if ($css !== False) {
+        $css = str_replace('  ', '', $css);
+        $css = str_replace('	', '', $css);
         $style = '<style scoped="scoped">'. $css .'</style>';
     }
 

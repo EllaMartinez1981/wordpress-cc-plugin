@@ -716,7 +716,7 @@ function cc_wordpress_article_filter($article) {
 
             // TODO: make cc_wordpress_figure() take and return a DOM fragment
             $figure_html = cc_wordpress_figure($id, '', $size, false);
-            $figure = HTML5_Parser::parseFragment($figure_html)->item(0);
+            $figure = HTML5_Parser::parseFragment($figure_html)->item(0)->getElementsByTagName('figure')->item(0);
 
             // a document context change is needed before appending the node
             $figure = $dom->importNode($figure, True);

@@ -52,6 +52,15 @@ figure[about] > figcaption {
         content: " // Audio: ";
     }
 
+    figure[about] > figcaption button,
+    figure[about] > figcaption input {
+        color: inherit;
+        background: inherit;
+        border-width: 1px;
+        font-size: inherit;
+        width: 5em;
+    }
+
 figure[about] > img,
 figure[about] > audio,
 figure[about] > video,

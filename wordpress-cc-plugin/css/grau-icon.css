@@ -57,3 +57,9 @@ figure[about] > video {
     figure[about] > figcaption small a[href*="by-nc-sa"] {
         background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAAAAABWohdTAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD0SURBVDjLY2CgOvhPVQAycD0IZDJ0QIVc+GasX3+Wh0zXwQycwdcBt8RFbf36fQ0UGmitiHD1GYbY9etPe1NmIG/H/zNKDC7vXBiUzvx3MQL6uR8avlBFSOpBwsgxgMyHGdjAsPu/Uuj/8nLBdzNX/S/nBfr5KFQejP7DtUN5/5EMQOeDDCxhOPMOFCuhxiA/l/OtX7/tJNx+qDKYYTDjoVH6H5JOsLvQJU3wXflMDBcyIPvoP4oLGbC4GBaGqwQZ0oBhaHz3v7MuShiiGogahrBAxjDQSoHKsTyDpx1uoJMyFdIhMFraoOY5SlKaU6idl6kMAJQFla4A8k4xAAAAAElFTkSuQmCC");
     }
+
+    figure[about] > figcaption button,
+    figure[about] > figcaption input {
+        font-size: inherit;
+        width: 5em;
+    }

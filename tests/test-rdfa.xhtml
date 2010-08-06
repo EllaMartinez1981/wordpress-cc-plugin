@@ -37,6 +37,20 @@ body {
                 <abbr title="Creative CommonsAttribution-ShareAlike">CC BY-SA</abbr>
             </a>
         </small>
+        <script> function showEmbed(element) {
+var figureNode = element.parentNode.parentNode;
+var helperNode = document.createElement('html');
+helperNode.appendChild(figureNode.cloneNode(true));
+
+embedNode = document.createElement('input');
+embedNode.value = helperNode.innerHTML;
+embedNode.readOnly = true;
+
+element.parentNode.replaceChild(embedNode,element);
+embedNode.onclick = function(){this.select();};
+embedNode.select();
+} </script>
+        <button onclick="showEmbed(this)">embed</button>
     </figcaption>
 </figure>
 

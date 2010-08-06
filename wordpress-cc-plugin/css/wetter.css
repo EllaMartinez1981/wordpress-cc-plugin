@@ -21,19 +21,33 @@ figure[about] > figcaption {
     display: block;
     line-height: 1.5em;
     padding: 11px 11px 11px 110px;
+    position: relative;
 }
+
+    figure[about] > figcaption button,
+    figure[about] > figcaption input {
+        color: inherit;
+        background: inherit;
+        border-width: 1px;
+        font-size: inherit;
+        margin-top: -1em;
+        position: absolute;
+        right: 11px;
+        top: 50%;
+        width: 5em;
+    }
 
     figure[about] > figcaption [property*=title] {
         display: block;
         font-style: italic;
+        margin-right: 6em;
     }
 
     figure[about] > figcaption [property*=attributionName] {
         color: inherit;
-        display: inline-block;
+        display: block;
         font-variant: small-caps;
-/*        text-transform: uppercase;*/
-/*        font-size: small;*/
+        margin-right: 6em;
     }
 
     figure[about] > figcaption small {

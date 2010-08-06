@@ -670,6 +670,7 @@ embedNode.value = helperNode.innerHTML;
 embedNode.readOnly = true;
 
 element.parentNode.replaceChild(embedNode,element);
+embedNode.onclick = function(){this.select();};
 embedNode.select();
 } </script>
 SCRIPT;

@@ -8,7 +8,7 @@ figure[about] {
 figure[about] > img,
 figure[about] > audio,
 figure[about] > video,
-figure[about] > figcaption * {
+figure[about] > object {
     display: block;
     margin: 0;
     padding: 0;
@@ -17,16 +17,15 @@ figure[about] > figcaption * {
 figure[about] figcaption {
     background-color: rgba(190, 190, 190, 0.6);
     bottom: 0px;
-    display: inline-block;
     height: 22px;
     left: 0px;
+    line-height: 22px;
     overflow: hidden;
     position: absolute;
     width: 22px;
 }
 
 figure[about] figcaption:hover {
-    padding-right: 22px;
     width: inherit;
 }
 
@@ -37,20 +36,20 @@ figure[about] figcaption:hover {
     figure[about] figcaption [property*=attributionName] {
         border: none;
         color: black;
-        display: block;
+        display: inline-block;
         font-size: 12px;
         height: 22px;
-        left: 22px;
-        line-height: 22px;
+        margin-left: 22px;
         padding: 0 0.5em;
-        position: relative;
         text-decoration: underline;
         text-shadow: none;
+        vertical-align: middle;
     }
 
     figure[about] figcaption small {
-        position: relative;
-        top: -22px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
     }
 
     figure[about] figcaption small,
@@ -58,7 +57,7 @@ figure[about] figcaption:hover {
     figure[about] figcaption small a abbr {
             color: transparent !important;
             border: none;
-            display: block;
+            display: inline-block;
             height: 22px;
             margin: 0;
             padding: 0;
@@ -71,3 +70,13 @@ figure[about] figcaption:hover {
             background-position: 0px center;
             background-repeat: no-repeat;
         }
+
+    figure[about] > figcaption button,
+    figure[about] > figcaption input {
+        color: inherit;
+        background: inherit;
+        border-width: 1px;
+        font-size: inherit;
+        width: 5em;
+        vertical-align: middle;
+    }

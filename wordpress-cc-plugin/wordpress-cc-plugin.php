@@ -13,9 +13,6 @@ Version: 0.6
 Author URI: http://dieweltistgarnichtso.net
 */
 
-// CC REST API URL
-$api_url = 'http://api.creativecommons.org/rest/dev';
-
 // CC Wordpress options
 $cc_wordpress_options = array(
     'cc_wordpress_css',
@@ -50,6 +47,25 @@ register_activation_hook(__FILE__,'cc_wordpress_install');
 
 // uninstall hook
 register_uninstall_hook(__FILE__, 'cc_wordpress_uninstall');
+
+/* API */
+
+function cc_wordpress_api($call) {
+    // CC REST API URL
+    $api_url = 'http://api.creativecommons.org/rest/dev';
+
+    $key = md5($call);
+    $data = get_transient($key);
+
+    if ($data === false) {
+        // cache miss
+        $data = file_get_contents($api_url . $call);
+        // cache for two weeks
+        set_transient($key, $data, 60*60*24*14);
+    }
+
+    return $data;
+}
 
 /* administration */
 
@@ -115,10 +131,8 @@ function cc_wordpress_license_select($current_license, $name, $current_jurisdict
 
 function cc_wordpress_license_name($license_id, $jurisdiction_id) {
     // grab license information
-    // FIXME: should come from cache
-    global $api_url;
     $locale = get_option('cc_wordpress_locale');
-    $rest = file_get_contents($api_url .'/license/standard/jurisdiction/'. $jurisdiction_id .'?locale='. $locale);
+    $rest = cc_wordpress_api('/license/standard/jurisdiction/'. $jurisdiction_id .'?locale='. $locale);
 
     $dom = new DOMDocument();
     $dom->loadXML($rest);
@@ -137,10 +151,8 @@ function cc_wordpress_license_name($license_id, $jurisdiction_id) {
 
 function cc_wordpress_license_url($license_id, $jurisdiction_id) {
     // grab license information
-    // FIXME: should come from cache
-    global $api_url;
     $locale = get_option('cc_wordpress_locale');
-    $rest = file_get_contents($api_url .'/license/standard/jurisdiction/'. $jurisdiction_id .'?locale='. $locale);
+    $rest = cc_wordpress_api('/license/standard/jurisdiction/'. $jurisdiction_id .'?locale='. $locale);
 
     $dom = new DOMDocument();
     $dom->loadXML($rest);
@@ -158,10 +170,8 @@ function cc_wordpress_license_url($license_id, $jurisdiction_id) {
 // generate jurisdiction select
 function cc_wordpress_jurisdiction_select($current_jurisdiction, $name, $show_default) {
     // grab list of supported jurisdictions
-    // FIXME: should come from cache
-    global $api_url;
     $locale = get_option('cc_wordpress_locale');
-    $rest = file_get_contents($api_url .'/support/jurisdictions?locale='. $locale);
+    $rest = cc_wordpress_api('/support/jurisdictions?locale='. $locale);
 
     $dom = new DOMDocument();
     // ugly hack because a root element is needed
@@ -192,10 +202,8 @@ function cc_wordpress_jurisdiction_select($current_jurisdiction, $name, $show_de
 
 function cc_wordpress_jurisdiction_name($jurisdiction_id) {
     // grab list of supported jurisdiction
-    // FIXME: should come from cache
-    global $api_url;
     $locale = get_option('cc_wordpress_locale');
-    $rest = file_get_contents($api_url .'/support/jurisdictions?locale='. $locale);
+    $rest = cc_wordpress_api('/support/jurisdictions?locale='. $locale);
 
     $dom = new DOMDocument();
     // ugly hack because a root element is needed
@@ -218,9 +226,7 @@ function cc_wordpress_jurisdiction_name($jurisdiction_id) {
 //generate locale select
 function cc_wordpress_locale_select($current_locale, $name) {
     // grab list of supported locales
-    // FIXME: should come from cache
-    global $api_url;
-    $rest = file_get_contents($api_url . '/locales');
+    $rest = cc_wordpress_api('/locales');
 
     $dom = new DOMDocument();
     $dom->loadXML($rest);

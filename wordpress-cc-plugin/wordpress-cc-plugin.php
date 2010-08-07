@@ -16,28 +16,31 @@ Author URI: http://dieweltistgarnichtso.net
 // CC REST API URL
 $api_url = 'http://api.creativecommons.org/rest/dev';
 
+// CC Wordpress options
+$cc_wordpress_options = array(
+    'cc_wordpress_css',
+    'cc_wordpress_default_license',
+    'cc_wordpress_default_rights_holder',
+    'cc_wordpress_default_attribution_url',
+    'cc_wordpress_default_jurisdiction',
+    'cc_wordpress_post_thumbnail_filter',
+    'cc_wordpress_locale'
+);
+
 /* install and uninstall */
 
 // create database entry on install
 function cc_wordpress_register_settings() {
-    register_setting('cc_wordpress_options', 'cc_wordpress_css');
-    register_setting('cc_wordpress_options', 'cc_wordpress_default_license');
-    register_setting('cc_wordpress_options', 'cc_wordpress_default_rights_holder');
-    register_setting('cc_wordpress_options', 'cc_wordpress_default_attribution_url');
-    register_setting('cc_wordpress_options', 'cc_wordpress_default_jurisdiction');
-    register_setting('cc_wordpress_options', 'cc_wordpress_post_thumbnail_filter');
-    register_setting('cc_wordpress_options', 'cc_wordpress_locale');
+    foreach ( $cc_wordpress_options as $option ) {
+        register_setting('cc_wordpress_options', $option);
+    }
 }
 
 // delete database entry on uninstall
 function cc_wordpress_uninstall(){
-    unregister_setting('cc_wordpress_options', 'cc_wordpress_css');
-    unregister_setting('cc_wordpress_options', 'cc_wordpress_default_license');
-    unregister_setting('cc_wordpress_options', 'cc_wordpress_default_rights_holder');
-    unregister_setting('cc_wordpress_options', 'cc_wordpress_default_attribution_url');
-    unregister_setting('cc_wordpress_options', 'cc_wordpress_default_jurisdiction');
-    unregister_setting('cc_wordpress_options', 'cc_wordpress_post_thumbnail_filter');
-    unregister_setting('cc_wordpress_options', 'cc_wordpress_locale');
+    foreach ( $cc_wordpress_options as $option ) {
+        unregister_setting('cc_wordpress_options', $option);
+    }
 }
 
 // install hook

@@ -17,12 +17,14 @@ figure[about] > object {
 figure[about] figcaption {
     background-color: rgba(190, 190, 190, 0.6);
     bottom: 0px;
+    font-size: 12px;
     height: 22px;
     left: 0px;
     line-height: 22px;
     overflow: hidden;
+    padding-left: 22px;
     position: absolute;
-    width: 22px;
+    width: 0px;
 }
 
 audio +  figcaption,
@@ -44,13 +46,10 @@ figure[about] figcaption:hover {
         border: none;
         color: black;
         display: inline-block;
-        font-size: 12px;
         height: 22px;
-        margin-left: 22px;
-        padding: 0 0.5em;
+        margin: 0 0.5em;
         text-decoration: underline;
         text-shadow: none;
-        vertical-align: baseline;
     }
 
     figure[about] figcaption small {
@@ -83,7 +82,7 @@ figure[about] figcaption:hover {
         color: inherit;
         background: inherit;
         border-width: 1px;
-        font-size: inherit;
+        font-size: smaller;
+        margin: 0 0.5em;
         width: 5em;
-        vertical-align: text-bottom;
     }

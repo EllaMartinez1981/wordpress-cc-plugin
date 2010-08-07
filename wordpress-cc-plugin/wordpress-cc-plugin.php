@@ -31,14 +31,16 @@ $cc_wordpress_options = array(
 
 // create database entry on install
 function cc_wordpress_register_settings() {
-    foreach ( $cc_wordpress_options as $option ) {
+    global $cc_wordpress_options;
+    foreach ($cc_wordpress_options as $option) {
         register_setting('cc_wordpress_options', $option);
     }
 }
 
 // delete database entry on uninstall
-function cc_wordpress_uninstall(){
-    foreach ( $cc_wordpress_options as $option ) {
+function cc_wordpress_uninstall() {
+    global $cc_wordpress_options;
+    foreach ($cc_wordpress_options as $option) {
         unregister_setting('cc_wordpress_options', $option);
     }
 }

@@ -116,7 +116,7 @@ function cc_wordpress_license_select($current_license, $name, $current_jurisdict
     }
 
     // TODO: Get this list via CC REST API
-    $license_ids = array('by','by-nc','by-nd','by-sa','by-nc-nd','by-nc-sa');
+    $license_ids = array('', 'by','by-nc','by-nd','by-sa','by-nc-nd','by-nc-sa');
     foreach ($license_ids as $license_id) {
         $selected = ($license_id == $current_license) ? ' selected="selected"' : '';
         $license_name = cc_wordpress_license_name($license_id, $current_jurisdiction);

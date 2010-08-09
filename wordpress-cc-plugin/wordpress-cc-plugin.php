@@ -20,8 +20,7 @@ $cc_wordpress_options = array(
     'cc_wordpress_default_rights_holder',
     'cc_wordpress_default_attribution_url',
     'cc_wordpress_default_jurisdiction',
-    'cc_wordpress_post_thumbnail_filter',
-    'cc_wordpress_locale'
+    'cc_wordpress_post_thumbnail_filter'
 );
 
 /* install and uninstall */
@@ -131,7 +130,7 @@ function cc_wordpress_license_select($current_license, $name, $current_jurisdict
 
 function cc_wordpress_license_name($license_id, $jurisdiction_id) {
     // grab license information
-    $locale = get_option('cc_wordpress_locale');
+    $locale = get_locale();
     $rest = cc_wordpress_api('/license/standard/jurisdiction/'. $jurisdiction_id .'?locale='. $locale);
 
     $dom = new DOMDocument();
@@ -151,7 +150,7 @@ function cc_wordpress_license_name($license_id, $jurisdiction_id) {
 
 function cc_wordpress_license_url($license_id, $jurisdiction_id) {
     // grab license information
-    $locale = get_option('cc_wordpress_locale');
+    $locale = get_locale();
     $rest = cc_wordpress_api('/license/standard/jurisdiction/'. $jurisdiction_id .'?locale='. $locale);
 
     $dom = new DOMDocument();
@@ -170,7 +169,7 @@ function cc_wordpress_license_url($license_id, $jurisdiction_id) {
 // generate jurisdiction select
 function cc_wordpress_jurisdiction_select($current_jurisdiction, $name, $show_default) {
     // grab list of supported jurisdictions
-    $locale = get_option('cc_wordpress_locale');
+    $locale = get_locale();
     $rest = cc_wordpress_api('/support/jurisdictions?locale='. $locale);
 
     $dom = new DOMDocument();
@@ -202,7 +201,7 @@ function cc_wordpress_jurisdiction_select($current_jurisdiction, $name, $show_de
 
 function cc_wordpress_jurisdiction_name($jurisdiction_id) {
     // grab list of supported jurisdiction
-    $locale = get_option('cc_wordpress_locale');
+    $locale = get_locale();
     $rest = cc_wordpress_api('/support/jurisdictions?locale='. $locale);
 
     $dom = new DOMDocument();
@@ -221,30 +220,6 @@ function cc_wordpress_jurisdiction_name($jurisdiction_id) {
 
     // if all else fails
     return $jurisdiction_id;
-}
-
-//generate locale select
-function cc_wordpress_locale_select($current_locale, $name) {
-    // grab list of supported locales
-    $rest = cc_wordpress_api('/locales');
-
-    $dom = new DOMDocument();
-    $dom->loadXML($rest);
-
-    // TODO: sort locales alphabetically
-    $locales = $dom->getElementsByTagName('locale');
-
-    $html  = '<select id="cc_locale" name="'. $name .'"">';
-
-    foreach ($locales as $locale) {
-        $locale_id = $locale->getAttribute('id');
-        $selected = ($locale_id == $current_locale) ? ' selected="selected"' : '';
-        $html .= '<option value="'. $locale_id .'"'. $selected .'>'. $locale_id .'</option>';
-    }
-
-    $html .= '</select>';
-
-    return $html;
 }
 
 // admin page
@@ -324,21 +299,6 @@ label select {
                 <?php
                 $current_jurisdiction = get_option('cc_wordpress_default_jurisdiction');
                 echo cc_wordpress_jurisdiction_select($current_jurisdiction, 'cc_wordpress_default_jurisdiction', false);
-                ?>
-            </label>
-        </p>
-
-        <h2>Locale</h2>
-        <p>
-            Select the locale for this plugin:
-        </p>
-        <p>
-            <label>
-                Locale
-
-                <?php
-                $current_locale = get_option('cc_wordpress_locale');
-                echo cc_wordpress_locale_select($current_locale, 'cc_wordpress_locale');
                 ?>
             </label>
         </p>

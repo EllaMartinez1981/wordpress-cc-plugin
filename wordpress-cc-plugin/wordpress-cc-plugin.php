@@ -129,6 +129,17 @@ function cc_wordpress_license_select($current_license, $name, $current_jurisdict
 }
 
 function cc_wordpress_license_name($license_id, $jurisdiction_id) {
+    if ($license_id == '') {
+        return 'All rights reserved.';
+    }
+
+    if ($jurisdiction_id == '') {
+        $jurisdiction_id = get_option('cc_wordpress_default_jurisdiction');
+    }
+    if ($jurisdiction_id == 'international') {
+        $jurisdiction_id = '';
+    }
+
     // grab license information
     $locale = get_locale();
     $rest = cc_wordpress_api('/license/standard/jurisdiction/'. $jurisdiction_id .'?locale='. $locale);
@@ -144,11 +155,16 @@ function cc_wordpress_license_name($license_id, $jurisdiction_id) {
             return $license->getAttribute('name');;
         }
     }
-
-    return 'All rights reserved.';
 }
 
 function cc_wordpress_license_url($license_id, $jurisdiction_id) {
+    if ($jurisdiction_id == '') {
+        $jurisdiction_id = get_option('cc_wordpress_default_jurisdiction');
+    }
+    if ($jurisdiction_id == 'international') {
+        $jurisdiction_id = '';
+    }
+
     // grab license information
     $locale = get_locale();
     $rest = cc_wordpress_api('/license/standard/jurisdiction/'. $jurisdiction_id .'?locale='. $locale);
@@ -186,6 +202,9 @@ function cc_wordpress_jurisdiction_select($current_jurisdiction, $name, $show_de
         $html .= '<option value=""'. $selected .'>Default</option>';
     }
 
+    $selected = ('international' == $current_jurisdiction) ? ' selected="selected"' : '';
+    $html .= '<option value="international"'. $selected .'>International</option>';
+
     foreach ($jurisdictions as $jurisdiction) {
         $jurisdiction_url = $jurisdiction->getAttribute('value');
         $jurisdiction_id = str_replace('http://creativecommons.org/international/', '', substr($jurisdiction_url, 0, -1));
@@ -200,6 +219,10 @@ function cc_wordpress_jurisdiction_select($current_jurisdiction, $name, $show_de
 }
 
 function cc_wordpress_jurisdiction_name($jurisdiction_id) {
+    if ($jurisdiction_id == 'international') {
+        return 'International';
+    }
+
     // grab list of supported jurisdiction
     $locale = get_locale();
     $rest = cc_wordpress_api('/support/jurisdictions?locale='. $locale);
@@ -476,9 +499,6 @@ table {
 
     $default_jurisdiction = get_option('cc_wordpress_default_jurisdiction');
     $current_jurisdiction = get_post_meta($id, 'cc_jurisdiction', true);
-    if ($current_jurisdiction == '') {
-        $current_jurisdiction = 'default';
-    }
 
     $name = 'attachments['. $id .'][cc_jurisdiction]';
     $html = cc_wordpress_jurisdiction_select($current_jurisdiction, $name, true);
@@ -607,9 +627,6 @@ function cc_wordpress_figure($attachment_id, $size = '', $is_post_thumbnail = fa
     }
 
     $jurisdiction = get_post_meta($id, 'cc_jurisdiction', true);
-    if ($jurisdiction == '') {
-        $jurisdiction = get_option('cc_wordpress_default_jurisdiction');
-    }
 
     $license_url = cc_wordpress_license_url($license, $jurisdiction);
 

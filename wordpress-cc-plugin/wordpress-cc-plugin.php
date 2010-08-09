@@ -557,9 +557,6 @@ HTML;
 }
 
 function cc_wordpress_figure($attachment_id, $size = '', $is_post_thumbnail = false) {
-
-    global $license_list;
-
     $post =& get_post($attachment_id);
     $id = $post->ID;
 

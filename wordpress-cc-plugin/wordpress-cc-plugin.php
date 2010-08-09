@@ -617,8 +617,7 @@ function cc_wordpress_figure($attachment_id, $size = '', $is_post_thumbnail = fa
         $license_abbr = 'CC' .' '. strtoupper($license);
         $license_full = cc_wordpress_license_name($license, $jurisdiction);
     } else {
-        // no license, just return standard markup
-        return wp_get_attachment_image($id);
+        return False;
     }
 
     // produce caption
@@ -682,11 +681,14 @@ function cc_wordpress_article_filter($article) {
 
             // TODO: make cc_wordpress_figure() take and return a DOM fragment
             $figure_html = cc_wordpress_figure($id, $size, false);
-            $figure = HTML5_Parser::parseFragment($figure_html)->item(0)->getElementsByTagName('figure')->item(0);
+            // only replace node if we actually got something
+            if ($figure_html) {
+                $figure = HTML5_Parser::parseFragment($figure_html)->item(0)->getElementsByTagName('figure')->item(0);
 
-            // a document context change is needed before appending the node
-            $figure = $dom->importNode($figure, True);
-            $element->parentNode->replaceChild($figure, $element);
+                // a document context change is needed before appending the node
+                $figure = $dom->importNode($figure, True);
+                $element->parentNode->replaceChild($figure, $element);
+            }
         }
     }    
 

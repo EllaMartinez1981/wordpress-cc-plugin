@@ -596,20 +596,18 @@ HTML;
     return $html;
 }
 
-function cc_wordpress_figure($attachment_id, $title, $size = '', $is_post_thumbnail = false) {
+function cc_wordpress_figure($attachment_id, $size = '', $is_post_thumbnail = false) {
 
     global $license_list;
 
     $post =& get_post($attachment_id);
     $id = $post->ID;
 
+    $title = $post->post_excerpt;
     if ($title == '') {
-        $title = $post->post_excerpt;
+        $title = $post->post_title;
         if ($title == '') {
-            $title = $post->post_title;
-            if ($title == '') {
-                $title = 'untitled';
-            }
+            $title = 'untitled';
         }
     }
 
@@ -726,7 +724,7 @@ function cc_wordpress_article_filter($article) {
             $size = $matches[1];
 
             // TODO: make cc_wordpress_figure() take and return a DOM fragment
-            $figure_html = cc_wordpress_figure($id, '', $size, false);
+            $figure_html = cc_wordpress_figure($id, $size, false);
             $figure = HTML5_Parser::parseFragment($figure_html)->item(0)->getElementsByTagName('figure')->item(0);
 
             // a document context change is needed before appending the node
@@ -748,7 +746,7 @@ function cc_wordpress_article_filter($article) {
 
 function cc_wordpress_post_thumbnail_filter($html, $post_id, $post_thumbnail_id, $size, $attr) {
     if (get_option('cc_wordpress_post_thumbnail_filter') == 'on') {
-        $html = cc_wordpress_figure($post_thumbnail_id, '', $size, true);
+        $html = cc_wordpress_figure($post_thumbnail_id, $size, true);
     }
 
     return $html;

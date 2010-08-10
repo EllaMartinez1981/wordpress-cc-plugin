@@ -423,9 +423,7 @@ table {
 }
 
 .cc_license > th,
-.cc_license > td,
-.cc_jurisdiction > th,
-.cc_jurisdiction > td {
+.cc_license > td {
     border-top: 1px solid #c0c0c0;
     border-style: solid;
     padding-top: 7px !important;

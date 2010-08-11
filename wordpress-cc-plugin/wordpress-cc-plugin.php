@@ -715,6 +715,8 @@ function cc_wordpress_article_filter($article) {
 
     // work around a bug regarding <style> elements including CSS '>' selectors
     $XML = str_replace('&gt;', '>', $XML);
+    // work around the IE bug that some elements are serialized with a null namespace
+    $XML = str_replace('embedNode.value = helperNode.innerHTML;', 'embedNode.value = helperNode.innerHTML.replace(/<:/g,"<").replace(/<.:/g,"</");', $XML);
     return $XML;
 }
 

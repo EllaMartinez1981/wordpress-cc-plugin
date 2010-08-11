@@ -56,11 +56,14 @@ function cc_wordpress_api($call) {
     $key = md5($call);
     $data = get_transient($key);
 
-    if ($data === false) {
+    // don't check identity here, just to be on the safe side; nkinkade encountered a condition where a nonexistant key returned an empty string
+    if ($data == false) {
         // cache miss
         $data = file_get_contents($api_url . $call);
-        // cache for two weeks
-        set_transient($key, $data, 60*60*24*14);
+        // if not empty, cache for two weeks
+        if ($data != '') {
+            set_transient($key, $data, 60*60*24*14);
+        }
     }
 
     return $data;

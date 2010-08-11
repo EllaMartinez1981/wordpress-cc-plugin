@@ -728,6 +728,38 @@ function cc_wordpress_post_thumbnail_filter($html, $post_id, $post_thumbnail_id,
     return $html;
 }
 
+function cc_wordpress_columns($defaults) {
+    $defaults['cc_license'] = __('License');
+    return $defaults;
+}
+
+add_filter ('manage_media_columns', 'cc_wordpress_columns');
+
+function cc_wordpress_custom_column($cname, $id) {
+    if ('cc_license' == $cname) {
+        $license = get_post_meta($id, 'cc_license', true);
+
+        if ($license == 'default') {
+            $license = get_option('cc_wordpress_default_license');
+            $default_text = '<br/><span style="opacity:0.5">'. __('(site default)') .'</span>';
+        }
+
+        $jurisdiction = get_post_meta($id, 'cc_jurisdiction', true);
+        $license_url = cc_wordpress_license_url($license, $jurisdiction);
+
+        if ($license != '') {
+            $license_abbr = strtoupper($license);
+            $license_full = cc_wordpress_license_name($license, $jurisdiction);
+            echo '<abbr style="border-bottom:1px dashed black;cursor:help" title="'. $license_full .'">'. $license_abbr .'</abbr>';
+        } else {
+            echo 'All rights reserved.';
+        }
+        echo $default_text;
+    }
+}
+
+add_action('manage_media_custom_column', 'cc_wordpress_custom_column', 10, 2);
+
 // apply filter to articles before they are displayed
 add_action('the_content', 'cc_wordpress_article_filter');
 

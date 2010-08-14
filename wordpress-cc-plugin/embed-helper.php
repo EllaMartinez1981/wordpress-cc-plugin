@@ -11,22 +11,35 @@ if (is_numeric($id) === false) {
 }
 
 $post =& get_post($id);
-$url = wp_get_attachment_url($id);
+$filename = get_post_meta($id, '_wp_attached_file', true);
 
-if ($url === false) {
+if ($filename == '') {
     header('HTTP/1.1 404 Not Found');
     echo 'There is no attachment with the specified ID.';
     return;
 }
 
+$upload_dir = wp_upload_dir();
+$abspath = $upload_dir['basedir'] .'/'. $filename;
+
+$mimetype = $post->post_mime_type;
+
 @ob_end_clean();
 header('Access-Control-Allow-Origin:*');
-header('Content-type: '. $post->post_mime_type);
+header('Content-Size: '. filesize($abspath));
+header('Content-type: '. $mimetype);
+
+if (strpos($mimetype, '/ogg')) {
+    require_once 'lib/ogg.class/ogg.class.php';
+    $oggfile = new Ogg($abspath);
+    header('X-Content-Duration: '. $oggfile->Streams[duration]);
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
     header('HTTP/1.1 204 No Content');
     return;
 }
 
-readfile($url);
+// loads the whole file into memory - NOT GOOD
+readfile($abspath);
 ?>

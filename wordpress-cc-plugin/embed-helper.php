@@ -1,4 +1,5 @@
 <?php
+// use Wordpress functions
 require '../../../wp-blog-header.php';
 
 $id = $_GET["id"];
@@ -18,9 +19,14 @@ if ($url === false) {
     return;
 }
 
-@ob_end_clean ();
-header('Content-type: '. $post->post_mime_type);
+@ob_end_clean();
 header('Access-Control-Allow-Origin:*');
-readfile($url);
+header('Content-type: '. $post->post_mime_type);
 
+if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
+    header('HTTP/1.1 204 No Content');
+    return;
+}
+
+readfile($url);
 ?>

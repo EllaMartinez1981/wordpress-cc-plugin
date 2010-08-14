@@ -1,0 +1,77 @@
+Return-Path: <Nicolas@Grisambre.net>
+X-Original-To: nils@dieweltistgarnichtso.net
+Delivered-To: dieweltistgarnichtso@mail.tiggerswelt.net
+Received: from localhost (kronos.tiggersystems.info [84.16.234.129])
+	by mail.tiggerswelt.net (Postfix) with ESMTP id 9E5EF3097
+	for <nils@dieweltistgarnichtso.net>; Sat, 14 Aug 2010 17:59:31 +0200 (CEST)
+X-Virus-Scanned: tiggerAV at tiggerswelt.net
+Received: from mailgateway.tiggerswelt.net ([127.0.0.1])
+	by localhost (kronos.tiggersystems.info [127.0.0.1]) (tiggerAV, port 10024)
+	with ESMTP id YcESf6ZgVMZu for <nils@dieweltistgarnichtso.net>;
+	Sat, 14 Aug 2010 18:00:34 +0200 (CEST)
+X-Greylist: delayed 399 seconds by postgrey-1.30 at kronos.tiggersystems.info; Sat, 14 Aug 2010 18:00:33 CEST
+Received: from smtp108.rog.mail.re2.yahoo.com (smtp108.rog.mail.re2.yahoo.com [68.142.225.206])
+	by mailgateway.tiggerswelt.net (Postfix) with SMTP id ED60923C4F8
+	for <nils@dieweltistgarnichtso.net>; Sat, 14 Aug 2010 18:00:33 +0200 (CEST)
+Received: (qmail 25527 invoked from network); 14 Aug 2010 15:43:34 -0000
+Received: from [192.168.0.134] (Nicolas@99.241.56.113 with plain)
+        by smtp108.rog.mail.re2.yahoo.com with SMTP; 14 Aug 2010 08:43:34 -0700 PDT
+X-Yahoo-SMTP: BcY6MTyswBDAmMLFFi.HXM2SUGwcpWxhr_Zfaz5zPEY8KgxF
+X-YMail-OSG: PeQZatYVM1lAqa8Pmgu9wZ3EXS5_Me81Ko4ju_b4K4beH0l
+ O7xLhxwkZ7obWNmQO3L62ZZ3fcx_hPtPJ1.4gUJCnusaiz4b1hqkWEjjYOSS
+ NJF6oHrutLX5A9r4Y.0alO7jtTNdRHOLrIN2nnKHHMg2IvfQXfhF1q8bKZlx
+ Zd6RILsK1_8CbEf4NAk.c.zuMnI73unbFQJdGBKaU6VOJkZCy4.B2c76WUVy
+ F5P8xA5Zd6jBrwQRYbzjLnQB90UuPpEml8X2RXHibFvGVXd7TJ1o7flD6Hqm
+ 3sPt.2X4FB_KeywImM1mA2mni35ZC1uVqMSdoKNW3l56xg3P0nPn55d8EqC5
+ .NdWieTwQMJDSNPVZYix0JUe8FMietMF3LP4p6zTmn5jhPSHg6jm1c8P5fNQ
+ F_A--
+X-Yahoo-Newman-Property: ymail-3
+Message-ID: <4C66B9A5.9020004@Grisambre.net>
+Date: Sat, 14 Aug 2010 11:43:33 -0400
+From: Nicolas Ricquemaque <Nicolas@Grisambre.net>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.2.8) Gecko/20100802 Lightning/1.0b2 Thunderbird/3.1.2
+MIME-Version: 1.0
+To: Nils Dagsson Moskopp <nils@dieweltistgarnichtso.net>
+Subject: Re: Ogg.class.php use with Wordpress
+References: <20100814164952.235e171d@desudesudesu>
+In-Reply-To: <20100814164952.235e171d@desudesudesu>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+
+
+Hello,
+
+I'm not a lawyer, and those licencing problems are just a nightmare to me !
+
+http://www.gnu.org/licenses/gpl-faq.html#AllCompatibility
+
+This is a pain. I used first gplV3 because of fear of DRM problems that 
+could occur with gplV2 to protect myself. And never to make trouble to 
+anyone else, or to prevent the use of the code. Even if I read the full 
+GPL licence, I have to admit that I don't understand all what it means. 
+That's bad, I know.
+
+I understand your concerns.
+
+For now, please feel free to use it inside your module, with my written 
+permission. I will think about releasing it to "gpl v2 or later" or any 
+other licence that would make anybody happy... Is that fine for you ?
+
+Nicolas
+
+Le 14/08/2010 10:49, Nils Dagsson Moskopp a écrit :
+> Hello Nicolas Ricquemaque,
+>
+>
+> I have found your Ogg PHP library at
+> <http://opensource.grisambre.net/ogg/>  and believe it to be useful for
+> a Wordpress plugin I am writing, handling embedding of CC-licensed
+> content, specifically for sending the Content-Duration header.
+>
+> However, Wordpress is under the GPL v2 and your plugin is under GPL
+> v3; so it seems I cannot use it. Could you change the licensing of your
+> library to accomodate my use case?
+>
+>
+> Greetings,
+

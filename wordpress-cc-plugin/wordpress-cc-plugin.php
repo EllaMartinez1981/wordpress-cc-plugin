@@ -591,7 +591,7 @@ function cc_wordpress_figure($attachment_id, $size = '', $is_post_thumbnail = fa
 
     $type = substr($post->post_mime_type, 0, 5);
 
-    $url = wp_get_attachment_url($id);
+    $url = WP_PLUGIN_URL .'/wordpress-cc-plugin/embed-helper.php?id='. $id;
     $alt = get_post_meta($id, '_wp_attachment_image_alt', true);
 
     if ($type == 'image') {

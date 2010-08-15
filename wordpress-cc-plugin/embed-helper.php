@@ -128,6 +128,7 @@ if (!isset($_SERVER['HTTP_RANGE']) or !preg_match('/bytes=\d*-\d*(,\d*-\d*)*$/',
         if ($start > $filesize-1) {
             header('HTTP/1.1 416 Requested Range Not Satisfiable');
             header('Content-Range: bytes */'. $filesize);
+            return;
         }
 
         $end = $parts[1];
@@ -137,6 +138,7 @@ if (!isset($_SERVER['HTTP_RANGE']) or !preg_match('/bytes=\d*-\d*(,\d*-\d*)*$/',
         if ($end > $filesize-1) {
             header('HTTP/1.1 416 Requested Range Not Satisfiable');
             header('Content-Range: bytes */' . $filesize);
+            return;
         }
 
         if ($end < $start) {

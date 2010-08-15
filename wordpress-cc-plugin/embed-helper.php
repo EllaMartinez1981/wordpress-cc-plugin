@@ -78,6 +78,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
     return;
 }
 
-// loads the whole file into memory - NOT GOOD
 embed_helper_readfile($abspath);
 ?>

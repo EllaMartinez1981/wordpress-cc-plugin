@@ -2,6 +2,23 @@
 // use Wordpress functions
 require '../../../wp-blog-header.php';
 
+function embed_helper_readfile($filename, $start=0, $length=0) {
+    $chunksize = 1*(1024*1024);
+    $buffer = '';
+    $file = fopen($filename, 'rb');
+
+    @ob_start();
+    while (!feof($file)) {
+        $buffer = fread($file, $chunksize);
+        print $buffer;
+        @ob_flush();
+        @flush();
+    }
+    @ob_end_flush();
+
+    fclose($file);
+}
+
 $id = $_GET["id"];
 
 if (is_numeric($id) === false) {
@@ -41,5 +58,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
 }
 
 // loads the whole file into memory - NOT GOOD
-readfile($abspath);
+embed_helper_readfile($abspath);
 ?>

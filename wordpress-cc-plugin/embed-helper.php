@@ -45,6 +45,9 @@ header('Access-Control-Allow-Origin:*');
 header('Content-Type: '. $mimetype);
 header('Date: ' . gmstrftime("%A %d-%b-%y %T %Z", time()));
 
+// cache media for two weeks
+header('Cache-Control: max-age='. 14*24*60*60);
+
 $etag = '"'. md5_file($abspath) .'"';
 header('ETag: '. $etag);
 

@@ -2,6 +2,53 @@
 // use Wordpress functions
 require '../../../wp-blog-header.php';
 
+function embed_helper_readfile($abspath, $start=False, $end=False) {
+    $chunksize = 1*(1024*1024);
+    $buffer = '';
+
+    $file = fopen($abspath, 'rb');
+
+    if ($file === False) {
+        header ('HTTP/1.1 500 Internal server error');
+        echo 'Attachment file could not be opened for reading.';
+        return;
+    }
+
+    $filesize = filesize($abspath);
+
+    if ($start and $end) {
+        header('HTTP/1.1 206 Partial Content');
+        header('Content-Range: bytes'. $start .'-'. $end .'/'. $filesize);
+        fseek($file, $start, 0);
+        $current = $start;
+    } else {
+        header('HTTP/1.1 200 OK');
+        $end = $filesize;
+    }
+
+    @ob_start();
+    while (!feof($file) ) {
+        if ($current + $chunksize >= $end) {
+            $buffer = fread($file, ($end - $current + 1));
+            echo $buffer;
+
+            @ob_flush();
+            @flush();
+            break;
+        } else {
+            $buffer = fread($file, $chunksize);
+            echo $buffer;
+            $current += $chunksize;
+
+            @ob_flush();
+            @flush();
+            }
+    }
+    @ob_end_flush();
+
+    fclose($file);
+}
+
 $id = $_GET["id"];
 
 if (is_numeric($id) === false) {
@@ -48,7 +95,8 @@ if ((strtotime($if_modified) !== False) && (($last_modified - strtotime($if_modi
     return;
 }
 
-header('Content-Length: '. filesize($abspath));
+$filesize = filesize($abspath);
+header('Content-Length: '. $filesize);
 
 if (strpos($mimetype, '/ogg')) {
     require_once 'lib/ogg.class/ogg.class.php';
@@ -56,29 +104,54 @@ if (strpos($mimetype, '/ogg')) {
     header('X-Content-Duration: '. $oggfile->Streams[duration]);
 }
 
+header('Accept-Ranges: bytes');
+
 if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
     header('HTTP/1.1 204 No Content');
     return;
 }
 
-$chunksize = 1*(1024*1024);
-$buffer = '';
-$file = fopen($abspath, 'rb');
+if (!isset($_SERVER['HTTP_RANGE']) or !preg_match('/bytes=\d*-\d*(,\d*-\d*)*$/', $_SERVER['HTTP_RANGE'])) {
+    // return full content for malformed range
+    embed_helper_readfile($abspath);
+} else {
+    // Use regex only for testing if format looks valid, explode() results
+    // see <http://stackoverflow.com/questions/2209204/parsing-http-range-header-in-php#answer-2211880>
+    $ranges = explode(',', substr($_SERVER['HTTP_RANGE'], 6));
+    foreach($ranges as $range) {
+        $parts = explode('-', $range);
 
-if(!$file) {
-    header ("HTTP/1.0 500 Internal server error");
-    echo 'Attachment file could not be opened for reading.';
-    return;
+        $start = $parts[0];
+        if ($start == '') {
+            $start = 0;
+        }
+        if ($start > $filesize-1) {
+            header('HTTP/1.1 416 Requested Range Not Satisfiable');
+            header('Content-Range: bytes */'. $filesize);
+        }
+
+        $end = $parts[1];
+        if ($end == '') {
+            $end = $filesize-1;
+        }
+        if ($end > $filesize-1) {
+            header('HTTP/1.1 416 Requested Range Not Satisfiable');
+            header('Content-Range: bytes */' . $filesize);
+        }
+
+        if ($end < $start) {
+            // "In the case that the second integer is smaller than the first one,
+            // that particular range is tagged as invalid, and ignored.  If it was
+            // the only requested byte range, the entire document is returned."
+            // see <http://tools.ietf.org/id/draft-ietf-http-range-retrieval-00.txt>
+            if (count($ranges) == 1) {
+                embed_helper_readfile($abspath);
+            }
+        } else {
+            // everything set up for range retrieval
+            embed_helper_readfile($abspath, $start, $end);
+        }
+    }
 }
 
-@ob_start();
-while (!feof($file)) {
-    $buffer = fread($file, $chunksize);
-    print $buffer;
-    @ob_flush();
-    @flush();
-}
-@ob_end_flush();
-
-fclose($file);
 ?>

@@ -2,23 +2,6 @@
 // use Wordpress functions
 require '../../../wp-blog-header.php';
 
-function embed_helper_readfile($filename, $start=0, $length=0) {
-    $chunksize = 1*(1024*1024);
-    $buffer = '';
-    $file = fopen($filename, 'rb');
-
-    @ob_start();
-    while (!feof($file)) {
-        $buffer = fread($file, $chunksize);
-        print $buffer;
-        @ob_flush();
-        @flush();
-    }
-    @ob_end_flush();
-
-    fclose($file);
-}
-
 $id = $_GET["id"];
 
 if (is_numeric($id) === false) {
@@ -78,5 +61,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
     return;
 }
 
-embed_helper_readfile($abspath);
+$chunksize = 1*(1024*1024);
+$buffer = '';
+$file = fopen($abspath, 'rb');
+
+if(!$file) {
+    header ("HTTP/1.0 500 Internal server error");
+    echo 'Attachment file could not be opened for reading.';
+    return;
+}
+
+@ob_start();
+while (!feof($file)) {
+    $buffer = fread($file, $chunksize);
+    print $buffer;
+    @ob_flush();
+    @flush();
+}
+@ob_end_flush();
+
+fclose($file);
 ?>

@@ -41,10 +41,28 @@ $abspath = $upload_dir['basedir'] .'/'. $filename;
 
 $mimetype = $post->post_mime_type;
 
-@ob_end_clean();
 header('Access-Control-Allow-Origin:*');
-header('Content-Size: '. filesize($abspath));
-header('Content-type: '. $mimetype);
+header('Content-Type: '. $mimetype);
+header('Date: ' . gmstrftime("%A %d-%b-%y %T %Z", time()));
+
+$etag = '"'. md5_file($abspath) .'"';
+header('ETag: '. $etag);
+
+if (stripslashes($_SERVER['HTTP_IF_NONE_MATCH']) == $etag) {
+    header('HTTP/1.1 304 Not Modified');
+    return;
+}
+
+$last_modified =  filemtime($abspath);
+header('Last-Modified: '. gmstrftime("%A %d-%b-%y %T %Z", $last_modified));
+
+$if_modified = stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+if ((strtotime($if_modified) !== False) && (($last_modified - strtotime($if_modified)) >= 0)) {
+    header('HTTP/1.1 304 Not Modified');
+    return;
+}
+
+header('Content-Length: '. filesize($abspath));
 
 if (strpos($mimetype, '/ogg')) {
     require_once 'lib/ogg.class/ogg.class.php';

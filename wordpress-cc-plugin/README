@@ -11,7 +11,7 @@ License, rights holder, attribution URI and jurisdiction can be set globally, pr
 
 Included with the plugin are several stylesheets that modify the display of licensing details, including one that emulates the minimalist attribution style of the german blog [Spreeblick] [4].
 
-The plugin includes a small web server that is able to serve the "Access-Allow-Origin" header to allow embedding content on other web sites and the "X-Content-Duration" header for Ogg media. It can also serve HTTP 1.1 range-requests. For a detailed explanation why this is needed, see the [corresponding page at the Mozilla developer wiki] [5].
+The plugin includes a small web server that is able to serve the "Access-Control-Allow-Origin" header to allow embedding content on other web sites and the "X-Content-Duration" header for Ogg media. It can also serve HTTP 1.1 range-requests. For a detailed explanation why this is needed, see the [corresponding page at the Mozilla developer wiki] [5].
 
 
 Installation

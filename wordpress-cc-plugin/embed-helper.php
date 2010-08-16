@@ -9,7 +9,7 @@ function embed_helper_readfile($abspath, $start=False, $end=False) {
     $file = fopen($abspath, 'rb');
 
     if ($file === False) {
-        header ('HTTP/1.1 500 Internal server error');
+        header('HTTP/1.1 500 Internal server error');
         echo 'Attachment file could not be opened for reading.';
         return;
     }

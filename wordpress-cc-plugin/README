@@ -1,20 +1,71 @@
-<!DOCTYPE html>
+Wordpress Creative Commons Plugin
+=================================
 
-<h1>Wordpress <abbr title="Creative Commons">CC</abbr> Plugin</h1>
 
-<h2>Installation</h2>
+Features
+--------
 
-<ol>
-    <li>Move the contents of the wordpress-cc-plugin/ directory into /wp-contents/plugins/</li>
-    <li>???</li>
-    <li>Profit.</li>
-</ol>
+This plugin extends the Wordpress media manager to provide support for [Creative Commons Licenses] [1]. Those licenses enable creators of works to provide simple means of communicating which rights they reserve.
 
-<h2>Changelog</h2>
+License, rights holder, attribution URI and jurisdiction can be set globally, providing a default, and also individually for each media attachment. At display time, corresponding markup for inline image, video and audio content and, optionally, post thumbnail images is converted to a [HTML5 figure] [2], enriched with machine-readable [RDFa metadata] [3].
 
-<ol>
-    <li><b>0.4</b>: added stylesheets, admin interface</li>
-    <li><b>0.3</b>: saving and retrieving of license metadata now possible</li>
-    <li><b>0.2</b>: added functional interface, RDFa generation</li>
-    <li><b>0.1</b>: added dummy interface</li>
-</ol>
+Included with the plugin are several stylesheets that modify the display of licensing details, including one that emulates the minimalist attribution style of the german blog [Spreeblick] [4].
+
+The plugin includes a small web server that is able to serve the "Access-Allow-Origin" header to allow embedding content on other web sites and the "X-Content-Duration" header for Ogg media. It can also serve HTTP 1.1 range-requests. For a detailed explanation why this is needed, see the [corresponding page at the Mozilla developer wiki] [5].
+
+
+Installation
+------------
+
+Caution: Although the plugin may also work with older versions of Wordpress, it is recommended that you use at least Wordpress 3.0. You should also check that your blog's theme serves XHTML content and has a HTML5 doctype.
+
+To install the plugin, move the contents of the wordpress-cc-plugin directory into the plugin directory of your Wordpress installation, then activate the plugin on the plugin manager page.
+
+It is recommended that you choose defaults for license, rights holder and jurisdiction on the "CC Wordpress" page in the administration area.
+
+
+Licensing
+---------
+
+Unless otherwise noted, the code is licensed under the [GNU General Public License, Version 2] [6] or (at your option) any later version. Stylesheets are licensed under a [Creative Commons Zero license] [7].
+
+The included [HTML5lib] [8] is licensed under the The [MIT License] [9].
+
+The included [Ogg (vorbis/theora) php manipulation library] [10] is licensed under the [GNU General Public License, Version 3] [11]. However, its author explicitly allows use with this plugin; a copy of the mail inluding his permission can be found in the lib/ogg.class directory.
+
+
+Attribution
+-----------
+
+Unless otherwise noted, code and stylesheets were written by Nils Dagsson Moskopp (erlehmann).
+
+Some improvements have been made by Nathan Kinkade (nkinkade).
+
+For rights holders of the included HTML5lib see the [list of HTML5lib committers] [12].
+
+The included Ogg (vorbis/theora) php manipulation library was written by Nicolas Ricquemaque.
+
+
+[1]: http://creativecommons.org/about/licenses/
+
+[2]: http://www.whatwg.org/specs/web-apps/current-work/multipage/grouping-content.html#the-figure-element
+
+[3]: http://wiki.creativecommons.org/RDFa
+
+[4]: http://spreeblick.com
+
+[5]: https://developer.mozilla.org/en/Configuring_servers_for_Ogg_media
+
+[6]: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+
+[7]: http://creativecommons.org/publicdomain/zero/1.0/
+
+[8]: http://code.google.com/p/html5lib/
+
+[9]: http://www.opensource.org/licenses/mit-license.php
+
+[10]: http://opensource.grisambre.net/ogg/
+
+[11]: http://www.gnu.org/licenses/gpl.html
+
+[12]: http://code.google.com/p/html5lib/people/list

@@ -111,6 +111,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
     return;
 }
 
+header('Content-Disposition: inline, filename='. basename($filename));
+
 if (!isset($_SERVER['HTTP_RANGE']) or !preg_match('/bytes=\d*-\d*(,\d*-\d*)*$/', $_SERVER['HTTP_RANGE'])) {
     // return full content for malformed range
     embed_helper_readfile($abspath);

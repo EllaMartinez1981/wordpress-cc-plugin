@@ -16,7 +16,7 @@ function embed_helper_readfile($abspath, $start=False, $end=False) {
 
     $filesize = filesize($abspath);
 
-    if ($start and $end) {
+    if (($start !== False) and ($end !== False)) {
         header('HTTP/1.1 206 Partial Content');
         header('Content-Range: bytes'. $start .'-'. $end .'/'. $filesize);
         fseek($file, $start, 0);

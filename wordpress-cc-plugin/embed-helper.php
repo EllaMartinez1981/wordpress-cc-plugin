@@ -26,14 +26,13 @@ function embed_helper_readfile($abspath, $start=False, $end=False) {
         $end = $filesize;
     }
 
-    @ob_start();
+    ob_end_clean ();
     while (!feof($file) ) {
         if ($current + $chunksize >= $end) {
             $buffer = fread($file, ($end - $current + 1));
             echo $buffer;
 
             @ob_flush();
-            @flush();
             break;
         } else {
             $buffer = fread($file, $chunksize);
@@ -41,10 +40,8 @@ function embed_helper_readfile($abspath, $start=False, $end=False) {
             $current += $chunksize;
 
             @ob_flush();
-            @flush();
             }
     }
-    @ob_end_flush();
 
     fclose($file);
 }

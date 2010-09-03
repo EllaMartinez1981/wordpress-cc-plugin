@@ -5,7 +5,7 @@
  * @version 0.6
  */
 /*
-Plugin Name: Wordpress CC Plugin
+Plugin Name: Creative Commons License Manager
 Plugin URI: http://labs.creativecommons.org/2010/05/24/gsoc-project-introduction-cc-wordpress-plugin/
 Description: The Wordpress interface for managing media is extended to have an option to specify a CC license for uploaded content. When aforementioned content is inserted into an article, RDFa-enriched markup is generated.
 Author: Nils Dagsson Moskopp // erlehmann

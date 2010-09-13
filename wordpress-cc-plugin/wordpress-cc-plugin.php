@@ -374,7 +374,7 @@ label select {
 
 // add admin menu entry
 function cc_wordpress_plugin_menu() {
-    add_options_page('CC Wordpress', 'CC Wordpress', 8, __FILE__, 'cc_wordpress_admin_page');
+    add_options_page('CC License Manager', 'CC License Manager', 8, __FILE__, 'cc_wordpress_admin_page');
 }
 
 // add admin pages

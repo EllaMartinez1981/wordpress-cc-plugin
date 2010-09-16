@@ -15,6 +15,10 @@ Included with the plugin are several stylesheets that modify the display of lice
 
 The plugin includes a small web server that is able to serve the "Access-Control-Allow-Origin" header to allow embedding content on other web sites and the "X-Content-Duration" header for Ogg media. It can also serve HTTP 1.1 range-requests. For a detailed explanation why this is needed, see the [corresponding page at the Mozilla developer wiki] [5].
 
+A video, with English and German subtitles available, shows [how the plugin is used] [Tutorial].
+
+[Tutorial] http://mirrors.creativecommons.org/movingimages/wordpress-cc-plugin-with-subtitles.ogv
+
 [1]: http://creativecommons.org/about/licenses/
 
 [2]: http://www.whatwg.org/specs/web-apps/current-work/multipage/grouping-content.html#the-figure-element

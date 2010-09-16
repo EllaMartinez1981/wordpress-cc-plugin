@@ -13,6 +13,8 @@ Included with the plugin are several stylesheets that modify the display of lice
 
 The plugin includes a small web server that is able to serve the "Access-Control-Allow-Origin" header to allow embedding content on other web sites and the "X-Content-Duration" header for Ogg media. It can also serve HTTP 1.1 range-requests. For a detailed explanation why this is needed, see the [corresponding page at the Mozilla developer wiki] [5].
 
+A video, with English and German subtitles available, shows [how the plugin is used] [Tutorial].
+
 
 Installation
 ------------
@@ -45,6 +47,8 @@ For rights holders of the included HTML5lib see the [list of HTML5lib committers
 
 The included Ogg (vorbis/theora) php manipulation library was written by Nicolas Ricquemaque.
 
+
+[Tutorial]: http://mirrors.creativecommons.org/movingimages/wordpress-cc-plugin-with-subtitles.ogv
 
 [1]: http://creativecommons.org/about/licenses/
 

@@ -3,7 +3,7 @@
 Tags: cc, creativecommons, license, licensing, spreeblick
 Requires at least: 2.9
 Tested up to: 3.0
-Stable tag: 0.7.2
+Stable tag: 0.7.4
 
 == Description ==
 

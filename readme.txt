@@ -17,7 +17,7 @@ The plugin includes a small web server that is able to serve the "Access-Control
 
 A video, with English and German subtitles available, shows [how the plugin is used] [Tutorial].
 
-[Tutorial] http://mirrors.creativecommons.org/movingimages/wordpress-cc-plugin-with-subtitles.ogv
+[Tutorial]: http://mirrors.creativecommons.org/movingimages/wordpress-cc-plugin-with-subtitles.ogv
 
 [1]: http://creativecommons.org/about/licenses/
 
